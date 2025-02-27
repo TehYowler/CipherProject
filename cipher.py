@@ -17,6 +17,23 @@ class StringError(TypeError):
     def __init__(self, message):
         super().__init__(message);
 
+#A custom exception for handling if a value is a string or not.
+class RangeError(TypeError):
+    def __init__(self, message):
+        super().__init__(message);
+
+#A custom exception for handling if a value is a single chracter or not.
+class NonIntegerError(TypeError):
+    def __init__(self, message):
+        super().__init__(message);
+
+#A custom exception for handling if a value is a single chracter or not.
+class EquationError(Exception):
+    def __init__(self, message):
+        super().__init__(message);
+
+
+
 #A class of ciphering strings and chars based on Python's innate functions ord() and chr().
 class Cipher:
 	allASCII = [chr(num) for num in range(178)]; #All ASCII characters in a list.
@@ -24,7 +41,7 @@ class Cipher:
 	#Constant messages.
 	IS_EQUATION_ERROR = "Value is not an equation.";
 	IS_INTEGER_ERROR = "Value is not an integer.";
-
+	EQUATION_CORRECT_ERROR = "The given equation did not produce a number, please make sure to only use the x variable."
 	RANGE_ERROR = f"This equation produces characters that go beyond the maximum or minimum 'chr' range of Python (0-{0x110000-1})";
 	REVERSE_ERROR = "This equation could not be reversed - please use the x variable.";
 	VARIABLE_ERROR = "Please only use the 'x' variable.";
@@ -32,6 +49,7 @@ class Cipher:
 	STRING_ERROR = "A cipher input was not recognized as a string";
 	CHAR_ERROR = "A cipher input was recognized as a string, but not recognized as a char.";
 	SUCCESS = "This cipher worked!";
+	UNKNOWN_ERROR = "An unknown error has occured, please try again.";
 
 	@staticmethod
 	def asEquation(equation: str|Expr) -> Expr:
@@ -40,7 +58,7 @@ class Cipher:
 		if(isinstance(equation,(Expr))):
 			return equation;
 		else:
-			raise TypeError(Cipher.IS_EQUATION_ERROR);
+			raise EquationError(Cipher.IS_EQUATION_ERROR);
 
 	@staticmethod
 	def charCheck(check: Any) -> None:
@@ -71,7 +89,10 @@ class Cipher:
 
 		#If somehow the result is not an integer, throw an errpr.
 		if not isinstance(ordinal, (int)):
-			raise TypeError(Cipher.IS_INTEGER_ERROR);
+			raise NonIntegerError(Cipher.IS_INTEGER_ERROR);
+
+		if(not (0 <= ordinal <= 0x110000)):
+			raise RangeError(Cipher.RANGE_ERROR)
 
 		return chr(ordinal); #If no error is thrown, return the corresponding letter to the shifted character.
 
@@ -99,7 +120,7 @@ class Cipher:
 			ordinal = int(ordinal);
 
 		if not isinstance(ordinal, int):
-			raise TypeError(Cipher.IS_INTEGER_ERROR);
+			raise NonIntegerError(Cipher.IS_INTEGER_ERROR);
 		return chr(ordinal);
 
 	@staticmethod
@@ -125,18 +146,27 @@ class Cipher:
 			return Cipher.STRING_ERROR;
 		except CharError as error:
 			return Cipher.CHAR_ERROR;
-		except ValueError as error:
-			return Cipher.RANGE_ERROR;
-		except IndexError as error:
-			return Cipher.REVERSE_ERROR;
-		except TypeError as error:
-			if(str(error) == Cipher.IS_EQUATION_ERROR):
-				return Cipher.IS_EQUATION_ERROR;
-			if(str(error) == Cipher.IS_INTEGER_ERROR):
-				return Cipher.IS_INTEGER_ERROR;
-			return Cipher.VARIABLE_ERROR;
+		# except ValueError as error:
+		# 	return Cipher.RANGE_ERROR;
+		# except IndexError as error:
+		# 	return Cipher.REVERSE_ERROR;
+		# except TypeError as error:
+		# 	if(str(error) == Cipher.IS_EQUATION_ERROR):
+		# 		return Cipher.IS_EQUATION_ERROR;
+		# 	if(str(error) == Cipher.IS_INTEGER_ERROR):
+		# 		return Cipher.IS_INTEGER_ERROR;
+		# 	return Cipher.VARIABLE_ERROR;
+		except EquationError as error:
+			return Cipher.IS_EQUATION_ERROR;
 		except OverflowError as error:
 			return Cipher.SIZE_ERROR;
+		except NonIntegerError as error:
+			return Cipher.EQUATION_CORRECT_ERROR;
+		except RangeError as error:
+			return Cipher.RANGE_ERROR;
+		except Exception:
+			return Cipher.UNKNOWN_ERROR;
+
 
 	#Same as encryptPossible, except for decryption.
 	@staticmethod
@@ -150,18 +180,26 @@ class Cipher:
 			return Cipher.STRING_ERROR;
 		except CharError as error:
 			return Cipher.CHAR_ERROR;
-		except ValueError as error:
-			return Cipher.RANGE_ERROR;
-		except IndexError as error:
-			return Cipher.REVERSE_ERROR;
-		except TypeError as error:
-			if(str(error) == Cipher.IS_EQUATION_ERROR):
-				return Cipher.IS_EQUATION_ERROR;
-			if(str(error) == Cipher.IS_INTEGER_ERROR):
-				return Cipher.IS_INTEGER_ERROR;
-			return Cipher.VARIABLE_ERROR;
+		# except ValueError as error:
+		# 	return Cipher.RANGE_ERROR;
+		# except IndexError as error:
+		# 	return Cipher.REVERSE_ERROR;
+		# except TypeError as error:
+		# 	if(str(error) == Cipher.IS_EQUATION_ERROR):
+		# 		return Cipher.IS_EQUATION_ERROR;
+		# 	if(str(error) == Cipher.IS_INTEGER_ERROR):
+		# 		return Cipher.IS_INTEGER_ERROR;
+		# 	return Cipher.VARIABLE_ERROR;
+		except EquationError as error:
+			return Cipher.IS_EQUATION_ERROR;
+		except NonIntegerError as error:
+			return Cipher.EQUATION_CORRECT_ERROR;
 		except OverflowError as error:
 			return Cipher.SIZE_ERROR;
+		except RangeError as error:
+			return Cipher.RANGE_ERROR;
+		except Exception:
+			return Cipher.UNKNOWN_ERROR;
 
 if(__name__ == "__main__"): #Demo if the file is run directly.
 
@@ -173,6 +211,11 @@ if(__name__ == "__main__"): #Demo if the file is run directly.
 
 		#The string to encrypt or decrypt.
 		string = input("Input a user string to cipher. Type 'cancel' to exit the program. ");
+
+		if(not string):
+			clear();
+			print('Please enter a non-empty string.')
+			continue;
 
 		if(string == "cancel"): #Exits at will.
 			break;
