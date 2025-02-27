@@ -146,16 +146,6 @@ class Cipher:
 			return Cipher.STRING_ERROR;
 		except CharError as error:
 			return Cipher.CHAR_ERROR;
-		# except ValueError as error:
-		# 	return Cipher.RANGE_ERROR;
-		# except IndexError as error:
-		# 	return Cipher.REVERSE_ERROR;
-		# except TypeError as error:
-		# 	if(str(error) == Cipher.IS_EQUATION_ERROR):
-		# 		return Cipher.IS_EQUATION_ERROR;
-		# 	if(str(error) == Cipher.IS_INTEGER_ERROR):
-		# 		return Cipher.IS_INTEGER_ERROR;
-		# 	return Cipher.VARIABLE_ERROR;
 		except EquationError as error:
 			return Cipher.IS_EQUATION_ERROR;
 		except OverflowError as error:
@@ -180,16 +170,6 @@ class Cipher:
 			return Cipher.STRING_ERROR;
 		except CharError as error:
 			return Cipher.CHAR_ERROR;
-		# except ValueError as error:
-		# 	return Cipher.RANGE_ERROR;
-		# except IndexError as error:
-		# 	return Cipher.REVERSE_ERROR;
-		# except TypeError as error:
-		# 	if(str(error) == Cipher.IS_EQUATION_ERROR):
-		# 		return Cipher.IS_EQUATION_ERROR;
-		# 	if(str(error) == Cipher.IS_INTEGER_ERROR):
-		# 		return Cipher.IS_INTEGER_ERROR;
-		# 	return Cipher.VARIABLE_ERROR;
 		except EquationError as error:
 			return Cipher.IS_EQUATION_ERROR;
 		except NonIntegerError as error:
