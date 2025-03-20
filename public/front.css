@@ -1,0 +1,227 @@
+@property --sidebar-width {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+
+@property --sidebar-end {
+  syntax: '<number>';
+  initial-value: 27;
+  inherits: true;
+}
+
+@property --sidebar-multi {
+  syntax: '<length>';
+  initial-value: 2px;
+  inherits: true;
+}
+
+:root {
+	--white: rgb(195,195,195);
+
+	--light:     rgb(255,65,65);
+	--deep:      rgb(195,25,25);
+	--main:      rgb(155,15,15);
+	--header:    rgb(235,125,125);
+	--bgGeneral: rgb(95,25,25);
+	--bgFocus:   rgb(45,0,0);
+	--bgSoft:    rgb(75,10,10);
+}
+
+code.block {
+	display: inline-block;
+	border: 1px solid var(--white);
+	padding: 3px;
+	margin: 2px;
+	border-radius: 5px;
+}
+
+/*This is just some dark mode stuff*/
+@layer {
+    html {
+        color-scheme: dark !important;
+    }
+    iframe {
+        color-scheme: initial;
+    }
+    html,
+    body {
+        background-color: #181a1b;
+    }
+    html,
+    body {
+        border-color: #736b5e;
+        color: #e8e6e3;
+    }
+}
+
+html,
+body {
+    background-color: var(--bgGeneral);
+}
+
+#mainPage {
+	margin-top: 70px;
+	margin-left: 110px;
+	width: calc(100% - 120px);
+}
+
+#mainPage > .section {
+	border: 2px solid var(--main);
+	background: var(--bgFocus);
+	border-radius: 10px;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+#mainPage > .section h1 {
+	color: var(--header);
+	font-size: 25px;
+}
+
+#mainPage > .section h2 {
+	color: var(--header);
+	filter: brightness(1.3) saturate(0.7);
+}
+
+#mainPage > .section h3 {
+	color: var(--header);
+	filter: brightness(1.6) saturate(0.2);
+}
+
+.verticalCenter {
+	margin:auto;
+}
+
+#underbar .verticalCenter {
+	text-align: center;
+	width: 100%;
+	text-wrap: nowrap;
+	width: 270px;
+}
+
+#title {
+	width: calc(100% - 200px);
+	right: 15px;
+	top: 0;
+	height: 40px;
+	margin: 0;
+	padding: 5px 25px;
+	margin-bottom: 5px;
+	/* margin-left: 80px; */
+	border-radius: 0 60px 0 60px;
+	display: block;
+	position: absolute;
+	background: var(--bgFocus);
+	border: 2px solid var(--main);
+
+	--fontType: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+#textLeft {
+	float: left;
+	height: 100%;
+	font-size: 26px;
+	align-content: center;
+	font-family: var(--fontType);
+}
+
+textarea {
+	resize: none;
+}
+
+#sidebarWrapper {
+	overflow: visible;
+	display: flex;
+	height: calc(100% - 6px);
+	width: 0%;
+	align-items: stretch;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 3;
+
+	--sidebar-width: 0;
+	transition: --sidebar-width 0.4s;
+}
+
+#sidebarWrapper:has(> *:hover) {
+	--sidebar-width: var(--sidebar-end);
+	transition: --sidebar-width 0.4s;
+}
+
+#padder {
+	border-radius: 400px 0 0 400px;
+	height: 100%;
+	padding: 0 15px;
+	color: transparent;
+	background: var(--main);
+}
+
+.bar {
+	display: flex;
+	align-items: stretch;
+	border-radius: 0 8px 8px 0;
+	border-style: solid;
+	border-color: var(--main);
+	flex-shrink: 0;
+	flex-grow: 0;
+	overflow: hidden;
+	background: rgb(105,105,105);
+	color: white;
+	flex-direction: column;
+}
+
+#underbar {
+	--sidebar-multi: 10px;
+	flex-basis: calc(var(--sidebar-width) * var(--sidebar-multi));
+	border-width: 2px;
+	height: 550px;
+	align-self: end;
+	margin-bottom: -6px;
+	background: rgb(35,35,35);
+}
+
+#sidebarInner {
+	border: none;
+	overflow: hidden;
+	height: 100%;
+}
+
+#sidebar {
+	--sidebar-multi: 2.1px;
+	flex-basis: calc(var(--sidebar-width) * var(--sidebar-multi));
+	border-radius: 0 8px 0 0;
+	height: 100%;
+	border-width: 3px;
+}
+
+#sidebar button {
+	color: rgb(215,215,215);
+	width: 100%;
+	flex: 0 1 50px;
+	text-wrap: nowrap;
+	text-align: center;
+	background: var(--bgSoft);
+	border-color: var(--deep);
+	cursor: pointer;
+}
+
+#sidebar button:hover {
+	filter: brightness(1.3);
+}
+
+#sidebar #fill {
+	flex: 1 0;
+	background: var(--bgFocus);
+}
+
+#cipherStore {
+	height: auto;
+	overflow: hidden;
+	text-align: center;
+}
+
+.max {
+	width: calc(var(--sidebar-end) * var(--sidebar-multi));
+}
