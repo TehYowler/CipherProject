@@ -8,7 +8,13 @@ from sympy import Expr, Integer, symbols;
 from sympy.abc import i, x
 import sympy;
 
-#Codeword operations for the Symbol Map Cipher
+#Regular expressions for cipher symbol replacement in the Symbol Map Cipher.
+import re
+
+#RNG for homophony in the Symbol Map Cipher.
+import random;
+
+#Codeword operations for the Symbol Map Cipher.
 def lowered(inputArray: Iterable):
 	seen = set()
 	lowerCase = [char.lower() for char in inputArray if char.lower() not in seen and (seen.add(char.lower()) or True)];
@@ -35,6 +41,9 @@ def trigraphic(inputArray: Iterable) -> list:
 			for letter3 in inputArray:
 				poly.append(letter1 + letter2 + letter3)
 	return poly
+
+def escapeFully(string) -> list[str]:
+	return [re.sub(r"\\|\||,", lambda a: "\\" + a.group(0), char) for char in string]
 
 alphabet = [chr(num) for num in [*range(65,91), *range(97,123)]]
 
@@ -293,6 +302,214 @@ def inPlaceCaesarCipher(string: str,shift: int):
 
 	return returnString;
 
+#The Symbol Map Cipher functions.
+def escapeCustomKey1(string) -> list[str]:
+
+	case = 0;
+	#0 = leave as is
+	#1 = case insensative, employ homophony for cases
+
+	poly = 0;
+	#0 = mono, or leave as is
+	#1 = bigraphic
+	#2 = trigraphic
+
+	if(re.search(r"^bigraphic:",string)):
+		poly = 1;
+		string = ":".join(string.split(":")[1:]);
+	elif(re.search(r"^trigraphic:",string)):
+		poly = 2;
+		string = ":".join(string.split(":")[1:]);
+
+	if(re.search(r"^case:",string)):
+		case = 1;
+		string = ":".join(string.split(":")[1:]);
+
+	# print(string)
+
+	if(string == "alphabet-standard"):
+		string = alphabet;
+	elif(string == "alpha-numeric"):
+		string = alphaNumeric;
+	elif(string == "full-set"):
+		string = escapeFully(fullSet);
+		# string = [re.sub(r"\\|\||,", lambda a: "\\" + a.group(0), char) for char in string];
+
+	escaperMain = [];
+	escapeBuffer = [];
+	for i in range(len(string)):
+		char = string[i];
+		escapeLookbehind = 0;
+
+		back = i;
+		while True:
+			back -= 1;
+			try:
+				charBack = string[back];
+				if(charBack != "\\"):
+					break;
+				escapeLookbehind += 1;
+			except:
+				break;
+
+		if(escapeLookbehind % 2 == 1):
+			escapeBuffer.append(char);
+			continue;
+
+		if(char == ","):
+			if(case == 1):
+				escapeBuffer = lowered(escapeBuffer);
+				escapeBuffer = [char.lower() + "|" + char.upper() for char in escapeBuffer];
+
+			if(poly == 1):
+				escapeBuffer = bigraphic(escapeBuffer);
+			elif(poly == 2):
+				escapeBuffer = trigraphic(escapeBuffer);
+
+			escaperMain.append(escapeBuffer);
+
+			escapeBuffer = [];
+			continue;
+		if(char == "\\"):
+			continue;
+		escapeBuffer.append(char);
+
+	if(escapeBuffer):
+		if(case == 1):
+			escapeBuffer = lowered(escapeBuffer);
+			escapeBuffer = [char.lower() + "|" + char.upper() for char in escapeBuffer];
+
+		if(poly == 1):
+			escapeBuffer = bigraphic(escapeBuffer);
+		elif(poly == 2):
+			escapeBuffer = trigraphic(escapeBuffer);
+
+		escaperMain.append(escapeBuffer);
+
+		escapeBuffer = [];
+
+	# print(escaperMain)
+	if(len(escaperMain) > 1):
+		return ["".join(chars) for chars in escaperMain];
+	elif(len(escaperMain) == 1):
+		return escaperMain[0];
+	else:
+		return []
+
+def escapeCustomKey2(string) -> list[str]:
+
+	escaperMain = [];
+	escapeBuffer = [];
+	for i in range(len(string)):
+		char = string[i];
+		escapeLookbehind = 0;
+
+		back = i;
+		while True:
+			back -= 1;
+			try:
+				charBack = string[back];
+				if(charBack != "\\"):
+					break;
+				escapeLookbehind += 1;
+			except:
+				break;
+
+		if(escapeLookbehind % 2 == 1):
+			escapeBuffer.append(char);
+			continue;
+
+		if(char == "|"):
+			escaperMain.append(escapeBuffer);
+
+			escapeBuffer = [];
+			continue;
+		if(char == "\\"):
+			continue;
+		escapeBuffer.append(char);
+
+	if(escapeBuffer):
+		escaperMain.append(escapeBuffer);
+
+		escapeBuffer = [];
+
+	return ["".join(chars) for chars in escaperMain] or [];
+
+def symbolMapCipher(keyAlphabet: str, keyCipher: str, text: str, decipher: bool = False):
+	#Performs a symbol map cipher.
+	#Key notation:
+		#abc (key of "a", "b", and "c")
+		#012 (key of "0", "1", and "2")
+		#-+avb"
+		#a,b,c (key of "a", "b", and "c")
+		#aa,bb,cc (key of "aa", "bb", and "cc")
+		#a|b|c (key of "a" or "b" or "c", for homophony)
+		#a|b|c,d|e|f (key of case "a" or "b" or "c", or case "d" or "e" or "f", for homophony)
+		#alphabet-standard (all 52 uppercase and lowercase letters)
+		#alpha-numeric (all 62 letters and numbers)
+		#full-set (ASCII characters 32-126 and the newline character 10, 96 characters total, contains alpha-numeric symbols and most common English symbols)
+		#case:alphabet-standard (all 26 letters, homophone cases for upper and lower)
+		#case:alpha-numeric (36 characters 26alpha+10num, homophone cases for upper and lower)
+		#bigraphic:standard-alphabet (creates all possible 2-letter combinations from the key, squares original key side)
+		#trigraphic:standard-alphabet (creates all possible 3-letter combinations from the key, cubes original key side)
+		#trigraphic:case:alpha-numeric (appropriate order for case+polygraphic notation)
+	#Do not mix presents with commas or pipes.
+	#Do not mix case with non-presets as that can allow for double-stacking homophony, case consideration should be built into the key innately for non-presets.
+	#Homophony works for both alphabet and cipher keys.
+
+	if(decipher): #If we are deciphering, swap the alphabet and cipher.
+		keyAlphabet, keyCipher = keyCipher, keyAlphabet
+
+	#Perform a custom escape on the characters. Since RegEx is not sufficient for this, a special function has been created for this purpose.
+	escaperAlphabet = escapeCustomKey1(keyAlphabet);
+	escaperCipher = escapeCustomKey1(keyCipher);
+
+	# print(escaperAlphabet)
+	# print(escaperCipher)
+
+	#Then make sure the key lengths match.
+	if(len(escaperAlphabet) != len(escaperCipher)):
+		raise Exception(f"Cannot perform Symbol Map Cipher - keys do not match length. {len(escaperAlphabet)} - {len(escaperCipher)}")
+
+	#Then, create a dictionary of keys: the alphabet to convert from, and the cipher to convert to.
+	conversion = {key: value for key, value in zip(escaperAlphabet, escaperCipher)};
+
+	#Then, sort the dictionary so that longer strings come first, so that smaller finds do not cannibalize larger finds.
+	sort = list(conversion.keys());
+	sort.sort(key = lambda string: len(string), reverse=True);
+	sort = {i: conversion[i] for i in sort};
+
+	# import json;
+	# print(json.dumps(sort,sort_keys=True, indent=4));
+	# print(sort)
+
+	#Then, search the string and begin replacement.
+	stringReturn = "";
+
+	for alphabet, cipher in sort.items():
+		# replacing = "|".join([re.escape(escaped) for escaped in alphabet.split("|")])
+		replacing = "|".join(re.escape(escaped) for escaped in escapeCustomKey2(alphabet));
+		choices = escapeCustomKey2(cipher);
+		# choice = random.choice(choices);
+		# text = text.replace(alphabet,cipher);
+		# print(replacing)
+		# print(choices)
+		# print(text)
+		# print()
+		text = re.sub(replacing,lambda match: random.choice(choices),text);
+
+	return text;
+
+# a = symbolMapCipher(r"1234567890!@#$%^&*()-=_+[]",r"a|A,b|B,c|C,d|D,e|E,f|F,g|G,h|H,i|I,j|J,k|K,l|L,m|M,n|N,o|O,p|P,q|Q,r|R,s|S,t|T,u|U,v|V,w|W,x|X,y|Y,z|Z","12345 "*10)
+
+# b = symbolMapCipher(r"1234567890!@#$%^&*()-=_+[]",r"a|A,b|B,c|C,d|D,e|E,f|F,g|G,h|H,i|I,j|J,k|K,l|L,m|M,n|N,o|O,p|P,q|Q,r|R,s|S,t|T,u|U,v|V,w|W,x|X,y|Y,z|Z",a,True)
+
+# a = symbolMapCipher(r"alphabet-standard", r"Ⱉⴈ⥧⡄ⶽ⧶⤈⓻⒞◘〉₂⥴⥆┹⡲ℌ⛬⍉Ⱎ⡿▘⳩⁴⫢□⹖⸌⤢⤀⩻⒩⽢⽟ⲇ⧮⪞⟸⼢⮣⢆⮆⣭▯⧠╠☻⼒⌑⾌⣃ⷒ", encrypting);
+
+# b = symbolMapCipher(r"alphabet-standard", r"Ⱉⴈ⥧⡄ⶽ⧶⤈⓻⒞◘〉₂⥴⥆┹⡲ℌ⛬⍉Ⱎ⡿▘⳩⁴⫢□⹖⸌⤢⤀⩻⒩⽢⽟ⲇ⧮⪞⟸⼢⮣⢆⮆⣭▯⧠╠☻⼒⌑⾌⣃ⷒ", a, True);
+
+
+
 if(__name__ == "__main__"): #Demo if the file is run directly.
 
 	print("Caesar cipher for 'This is a cat.', shifting right one:")
@@ -330,6 +547,68 @@ if(__name__ == "__main__"): #Demo if the file is run directly.
 	print("In-place cipher for 'acdAAABCDDD', shifting left once:")
 	print(inPlaceCaesarCipher("acdAAABCDDD",-1))
 	print()
+
+	encrypting = "This is a rat of every cat, no? ... !@#$%^&*()_+1234567890-=[]\\{}|;':\",./<>?"
+
+	alphabetKey = r"full-set";
+	cipherKey = [];
+
+	#This is just a temporary section chopping out parts from a string to make homophonous cipher key.
+	if(False):
+
+		chopFrom = r"∭⾧⒐┞♶ⲷ⌠⮑┏ⒻⳖ⢝⠌⦹⧙⦳◰ⶏ⅏⌶␈‎❙➵┖⌬⽮ⴁ⋝‑ⴒ⇉⿂⏀⭿‡ↅ⟘⨁⤇⦟⽨⻔₹⯬✾⁇ℛ⸈⎤⡂⎗⡺╯ⵓ⣇⊱⪠–⇄⁹⿻⣚⨿⍲⺿∕⻚⼁⩒Ⰰ⛶℣⽖⥯⅘⇶ⴽ♝⏅⸋⥗⪗⸍❽⢯⤼Ⱂ⬓ⷅ⑤⇁℩╃⚬ⷹⶭ∌✮ⱗⳃ⻃₠⇛╳ⵜ⪣⡈⺆▧ⱇⷐ⁔≏⢊⟽⧥▩Ⓣ⃯⁈ⷼ⤂❧⺸Ⱓ⸴⟱₱➎ℯⱙ⇌⿼ⱞ␡⑶⯫⹔„₮⮋⪜⧨⌻⍃♁╟⼇⍔⌦⻀↦⟌⏣ⶹ⏍⣱⬰☞ⵞ⠛⻕ⴶ✜➼⦾⨝⚢⠭⺔Ⓛ⤘ⶻ⟲⾉₉⏠⻣▤⁜⋫➸⚎ⱘ⥿⾥ⷊ⌣⼝⼘⌔⦺⍸⠐⾟⏕ℨ⌵⒍⨔⼿⥁ⶩ⼻⭁⾣▲⤌⽫⬧⯳℆❻▊Ⅹ◃ℬ⯰⎺↺⧄⦲Ⱶⴥ⎍⫑ⅳ⭧⩗⥺ⲃ⽛⋨↪ⰶ⚝⢩⼩⨲╹ℍ╷‐⿵⩘♚ΩⲄ⑨⛁⒵⡒⨈⎟⿏⬛‥₭⳽⸫⪱ⶓ⪭⍧║⋄⛐⟆⋈⠷₢⾀⊺ⴺ⟷⬳⋯♣⢱⪎▼✯ⅅ⧑┻⾍╡−⚲↋⢡⾺⢸␆⮧◈Ⲃ⒢┨⨠✟⽽⧣⼼⣙⥈␙⟒‾➯⌲△⥙❣⃗⯕⊌⏷⁍⩤⬝ⶾ∙⃟⤹⚯ⵍ⿶⺕⧼⨳ⴜ⦰ⲁ⏈⸶ⱚ ⢰⇾┚⫬⻭⌥⩾✕⥼⡜⸠⌎⌈⣳Ⱖ━␟⊹⁏⪏⪧‽➆⧰♖‣₧⠟⎳≘☐⥃⧘⥊↰⻟④␢☌≥ℂ⋜⫿⾓⽹⮢Ⲭ⠹⼜⺗⟐⼙⇦⇝⯯⾷╘◩Ⓥ⮫⋇⍏❱⦄⢵⋀⥵★〈ⶮ⽔∥⌹⫀☏ℱ⟾↜⮃⬵⾤⣦⃙☺⅓⾂⬖┋⫱⠙⫋⋑≶⟇⦫◢⒜≔⨌⼅ⴌ⚿⣹ⴤ⭳ⱬ⾳⒒⮬⻎⥒⒫ⴃ℠ⷺⵥ⮜⸞⠸⊔♘⺥↑⎧⼴⍤▴☛┐↣⊀⍯⟥⬢✓⒦∛⊑∶⛛ⅼⰺ⋠⚃⊣⬏⺟◒Ⰳ▆ⷧ⥛⮓☟⊎Ⱈ⍢⿰⩽⎆ⴏ⨨⻇◙⹏⬤⌟⟵⚌⎔⯸▦⑭⚂⟖⓼⥨▬⺨⦝⮌⁰⫦⛉⻧Ⱏ✖⪔❾ ⢨≣⌾╿╶⽥ⶉ℀≲➊⡧⯗⻁◍◂⒗ⷛⅠ≿⾘⤗⤑╂⌌⿇⳨⣀⍩≭Ⱌ⸧⹍⮟✤▍⼹ⳟⓥ⡷╬ⲣ☙⋞≩⧪ⴴ⍾⽎⭢⟕⦭₀⟠⡽➑Ⳋ⪩⧷⍼↱⤥⁆♛⻰⒮⼎⥦Ⲳ╥⑳⇅⑃Ⲙ⪁⢀ⓈⰩ⺉⺁⊠ⵐ⇪⬀⬔⺝⿽⬞⤧✵⏥ℹ⁀⒠ⱍⵧ⢪➉↓⪅⢚⪡♩ⅈ⎦⺀ⳣ⊳⑺⯏⩳⒏⥲␄␉Ⱀ◗➄⧻⩶⨚Ⱨ⁖℡⤋℁⏼⁨⁪ⷖ⼈ⱜ⎀⊭⯤ⶊⷩ⯁ⱆ⺈∻⽯⫮⡇␞╴⃧⬿⏓Ⲗ⠍⠈⮠❦⇕⩩⍳≪⃡ⶁⳬ⸚⯖╫⬙⡐⩆❒⨐⩵⊈ⱀ⟣ ⤲ⰹ⋼⮄⡙≅⢑␘⛌⅜Ⓐ╎⓸③⺮⵰⥜Ⅻ╖√⧹⥑▽ⷡ⸻Ⓒ⺰⳹⫲ₔ␣⢘⢁⢺≇⁂❋ⓠⱒ⊶⩟♮⺑⍻Ⲓ╋▅ⵕⅸ⾹☤⛟⮻┥⋱⢬⹙₯⸀⨃⺂☋∦⊅Å♦⃛⨒╒ⴵ⩯↽";
+
+		chopA = chopFrom[96*0:96*1]
+		chopB = chopFrom[96*1:96*2]
+		chopC = chopFrom[96*2:96*3]
+		chopD = chopFrom[96*3:96*4]
+		chopE = chopFrom[96*4:96*5]
+		chopF = chopFrom[96*5:96*6]
+		chopG = chopFrom[96*6:96*7]
+
+		print(chopA)
+		print(chopB)
+		print(chopC)
+		print(chopD)
+		print(chopE)
+		print(chopF)
+		print(chopG)
+		print()
+
+		for i in range(96):
+			cipherKey.append(chopA[i] + '|' + chopB[i] + '|' + chopC[i] + '|' + chopD[i] + '|' + chopE[i] + '|' + chopF[i] + '|' + chopG[i])
+		cipherKey = ",".join(cipherKey);
+	else:
+		#This part is a whole constructed homophonous key from the previous string.
+		cipherKey = "∭|ⶭ|⦺|−|⮢|ⰺ|⽎,⾧|∌|⍸|⚲|Ⲭ|⋠|⭢,⒐|✮|⠐|↋|⠹|⚃|⟕,┞|ⱗ|⾟|⢡|⼜|⊣|⦭,♶|ⳃ|⏕|⾺|⺗|⬏|₀,ⲷ|⻃|ℨ|⢸|⟐|⺟|⟠,⌠|₠|⌵|␆|⼙|◒|⡽,⮑|⇛|⒍|⮧|⇦|Ⰳ|➑,┏|╳|⨔|◈|⇝|▆|Ⳋ,Ⓕ|ⵜ|⼿|Ⲃ|⯯|ⷧ|⪩,Ⳗ|⪣|⥁|⒢|⾷|⥛|⧷,⢝|⡈|ⶩ|┨|╘|⮓|⍼,⠌|⺆|⼻|⨠|◩|☟|↱,⦹|▧|⭁|✟|Ⓥ|⊎|⤥,⧙|ⱇ|⾣|⽽|⮫|Ⱈ|⁆,⦳|ⷐ|▲|⧣|⋇|⍢|♛,◰|⁔|⤌|⼼|⍏|⿰|⻰,ⶏ|≏|⽫|⣙|❱|⩽|⒮,⅏|⢊|⬧|⥈|⦄|⎆|⼎,⌶|⟽|⯳|␙|⢵|ⴏ|⥦,␈|⧥|℆|⟒|⋀|⨨|Ⲳ,‎|▩|❻|‾|⥵|⻇|╥,❙|Ⓣ|▊|➯|★|◙|⑳,➵|⃯|Ⅹ|⌲|〈|⹏|⇅,┖|⁈|◃|△|ⶮ|⬤|⑃,⌬|ⷼ|ℬ|⥙|⽔|⌟|Ⲙ,⽮|⤂|⯰|❣|∥|⟵|⪁,ⴁ|❧|⎺|⃗|⌹|⚌|⢀,⋝|⺸|↺|⯕|⫀|⎔|Ⓢ,‑|Ⱓ|⧄|⊌|☏|⯸|Ⱙ,ⴒ|⸴|⦲|⏷|ℱ|▦|⺉,⇉|⟱|Ⱶ|⁍|⟾|⑭|⺁,⿂|₱|ⴥ|⩤|↜|⚂|⊠,⏀|➎|⎍|⬝|⮃|⟖|ⵐ,⭿|ℯ|⫑|ⶾ|⬵|⓼|⇪,‡|ⱙ|ⅳ|∙|⾤|⥨|⬀,ↅ|⇌|⭧|⃟|⣦|▬|⬔,⟘|⿼|⩗|⤹|⃙|⺨|⺝,⨁|ⱞ|⥺|⚯|☺|⦝|⿽,⤇|␡|ⲃ|ⵍ|⅓|⮌|⬞,⦟|⑶|⽛|⿶|⾂|⁰|⤧,⽨|⯫|⋨|⺕|⬖|⫦|✵,⻔|⹔|↪|⧼|┋|⛉|⏥,₹|„|ⰶ|⨳|⫱|⻧|ℹ,⯬|₮|⚝|ⴜ|⠙|Ⱏ|⁀,✾|⮋|⢩|⦰|⫋|✖|⒠,⁇|⪜|⼩|ⲁ|⋑|⪔|ⱍ,ℛ|⧨|⨲|⏈|≶|❾|ⵧ,⸈|⌻|╹|⸶|⟇| |⢪,⎤|⍃|ℍ|ⱚ|⦫|⢨|➉,⡂|♁|╷| |◢|≣|↓,⎗|╟|‐|⢰|⒜|⌾|⪅,⡺|⼇|⿵|⇾|≔|╿|⢚,╯|⍔|⩘|┚|⨌|╶|⪡,ⵓ|⌦|♚|⫬|⼅|⽥|♩,⣇|⻀|Ω|⻭|ⴌ|ⶉ|ⅈ,⊱|↦|Ⲅ|⌥|⚿|℀|⎦,⪠|⟌|⑨|⩾|⣹|≲|⺀,–|⏣|⛁|✕|ⴤ|➊|ⳣ,⇄|ⶹ|⒵|⥼|⭳|⡧|⊳,⁹|⏍|⡒|⡜|ⱬ|⯗|⑺,⿻|⣱|⨈|⸠|⾳|⻁|⯏,⣚|⬰|⎟|⌎|⒒|◍|⩳,⨿|☞|⿏|⌈|⮬|◂|⒏,⍲|ⵞ|⬛|⣳|⻎|⒗|⥲,⺿|⠛|‥|Ⱖ|⥒|ⷛ|␄,∕|⻕|₭|━|⒫|Ⅰ|␉,⻚|ⴶ|⳽|␟|ⴃ|≿|Ⱀ,⼁|✜|⸫|⊹|℠|⾘|◗,⩒|➼|⪱|⁏|ⷺ|⤗|➄,Ⰰ|⦾|ⶓ|⪏|ⵥ|⤑|⧻,⛶|⨝|⪭|⪧|⮜|╂|⩶,℣|⚢|⍧|‽|⸞|⌌|⨚,⽖|⠭|║|➆|⠸|⿇|Ⱨ,⥯|⺔|⋄|⧰|⊔|⳨|⁖,⅘|Ⓛ|⛐|♖|♘|⣀|℡,⇶|⤘|⟆|‣|⺥|⍩|⤋,ⴽ|ⶻ|⋈|₧|↑|≭|℁,♝|⟲|⠷|⠟|⎧|Ⱌ|⏼,⏅|⾉|₢|⎳|⼴|⸧|⁨,⸋|₉|⾀|≘|⍤|⹍|⁪,⥗|⏠|⊺|☐|▴|⮟|ⷖ,⪗|⻣|ⴺ|⥃|☛|✤|⼈,⸍|▤|⟷|⧘|┐|▍|ⱜ,❽|⁜|⬳|⥊|↣|⼹|⎀,⢯|⋫|⋯|↰|⊀|ⳟ|⊭,⤼|➸|♣|⻟|⍯|ⓥ|⯤,Ⱂ|⚎|⢱|④|⟥|⡷|ⶊ,⬓|ⱘ|⪎|␢|⬢|╬|ⷩ,ⷅ|⥿|▼|☌|✓|ⲣ|⯁,⑤|⾥|✯|≥|⒦|☙|ⱆ,⇁|ⷊ|ⅅ|ℂ|∛|⋞|⺈,℩|⌣|⧑|⋜|⊑|≩|∻,╃|⼝|┻|⫿|∶|⧪|⽯,⚬|⼘|⾍|⾓|⛛|ⴴ|⫮,ⷹ|⌔|╡|⽹|ⅼ|⍾|⡇";
+
+	print(fullSet)
+	print()
+	print(cipherKey)
+
+	last = encrypting;
+	equals = True;
+
+	for i in range(2000):
+		#This loop repeatedly encyrpts and decrypts the original string we want to encrypt.
+		#"a" is the encrypted string, and "b" is the decrypted string.
+		a = symbolMapCipher(alphabetKey, cipherKey, encrypting);
+		b = symbolMapCipher(alphabetKey, cipherKey, a, True);
+
+		#b is checked against the "last" variable, which should ALWAYS be equal to the original unencrypted string.
+		#This check is done for debugging purposes.
+		#If it is not, show the surrounding details and call "input()" to stop the program until terminal input is recieved.
+		if(last != b):
+			print("--------")
+			print(a)
+			print(b)
+			print(last)
+			print("--------")
+			input()
+
+		# last = b;
+		# print(a)
+		# print(b)
 
 	print("Below is the input for the AlgebraicCipher class.")
 
