@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Cipher</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="./common.css" />
+	<link rel="stylesheet" type="text/css" href="./caesar.css" />
+
+	<style>
+	</style>
+
+</head>
+<body>
+
+	<div id="sidebarWrapper">
+
+		<div class="bar" id="padder"></div>
+		<div class="bar" id="sidebar">
+			<div id="sidebarInner" class="bar max">
+				<button id="pressCipher"    >Main<br>Page</button>
+				<button id="pressCaesar"    >Caesar</button>
+				<button id="pressAlgebraic" >Algebraic</button>
+				<button id="pressPoint"     >Point</button>
+				<button id="pressPlace"     >Place</button>
+				<button id="pressSymbol"    >Symbol</button>
+				<div id="fill"></div>
+			</div>
+		</div>
+		<div class="bar" id="underbar">
+			<div class="verticalCenter" class="max">
+				<h1>All Ciphers</h1>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="title">
+		<span id="textLeft">
+			Caesar Cipher
+		</span>
+	</div>
+
+	<div id="mainPage">
+		<div class="section">
+			<h1>How-To</h1>
+			<ul>
+				<li>Input the string you want to encrypt or decrypt.</li>
+				<li>Input the key as a number (wraps between 0-26).</li>
+				<li>If you are decrypting, use the key used to originally encrypt the string and press the "decipher" button.</li>
+			</ul>
+
+		</div>
+
+		<div class="section">
+			<h1>Cipher Input</h1>
+			<div id="cipherInput">
+				<div style="grid-column: span 1">The string you want to cipher.</div> <textarea id="cipherFrom"></textarea>
+				<div style="grid-column: span 1">The cipher key number.</div> <textarea id="key"></textarea>
+				<div style="grid-column: span 1">Decipher using the key.</div> <div><toggle id="decipher"></toggle></div>
+			</div>
+		</div>
+
+		<div class="section">
+			<h1>Caesar Cipher Details</h1>
+			The Caesar Cipher is an extremely simple cipher which ciphers an alphabet whose order is shifted forwards or backwards.<br>
+			Shifting once right, ABCDXYZ -> BCDEYZA.<br>
+			Shifting three time left, ABCDXYZ -> XYZAUVW.
+
+			<h2>Benefits and Drawbacks</h2>
+			The Caesar cipher is immensely easy to perform, but is also equally as easy to decode. It is one of the most common ciphers, and it is very impractical if you actually desire the contents of your message to be safe. At best, it will only thwart strict text parsers, but likely won't get past a normal person who knows even surface-level cryptography as it can even be descrypted by hand. Even worse, an English-only Caesar cipher presumes the English language, which helps narrow things down. Also, Caesar ciphers are subject to raw <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way. Also, Caesar ciphers are traditionally case insensitive and ignore spaces and punctuation, resulting in less symbols.
+		</div>
+		<!-- <div class="section">
+			<h1>Section header</h1>
+
+
+		</div> -->
+	</div>
+
+	<script src="init.js"></script>
+
+	<script>
+	</script>
+
+</body>
+</html>

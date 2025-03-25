@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Cipher</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="./common.css" />
+	<link rel="stylesheet" type="text/css" href="./symbol.css" />
+
+	<style>
+	</style>
+
+</head>
+<body>
+
+	<div id="sidebarWrapper">
+
+		<div class="bar" id="padder"></div>
+		<div class="bar" id="sidebar">
+			<div id="sidebarInner" class="bar max">
+				<button id="pressCipher"    >Main<br>Page</button>
+				<button id="pressCaesar"    >Caesar</button>
+				<button id="pressAlgebraic" >Algebraic</button>
+				<button id="pressPoint"     >Point</button>
+				<button id="pressPlace"     >Place</button>
+				<button id="pressSymbol"    >Symbol</button>
+				<div id="fill"></div>
+			</div>
+		</div>
+		<div class="bar" id="underbar">
+			<div class="verticalCenter" class="max">
+				<h1>All Ciphers</h1>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="title">
+		<span id="textLeft">
+			Symbol Map Cipher
+		</span>
+	</div>
+
+	<div id="mainPage">
+		<div class="section">
+			<h1>How-To</h1>
+			<ul>
+				<li>Input the string you want to encrypt or decrypt.</li>
+				<li>Input the cipher key as a list of symbols to convert to.</li>
+				<li>Input the alphabet key as a list of symbols to convert from.</li>
+				<li>If you are decrypting, use the key used to originally encrypt the string and press the "decipher" button.</li>
+			</ul>
+			Refer to the details below for the full syntax of this cipher.
+
+		</div>
+
+		<div class="section">
+			<h1>Cipher Input</h1>
+			<div id="cipherInput">
+				<div style="grid-column: span 1">The string you want to cipher.</div> <textarea id="cipherFrom"></textarea>
+
+				<div style="grid-column: span 1">The cipher key.</div> <textarea style="grid-column: span 1" id="key"></textarea>
+				<div style="grid-column: span 1; position: relative; left: 30px;">The alphabet key.</div> <textarea style="grid-column: span 1" id="alphabet"></textarea>
+
+				<div style="grid-column: span 1">Decipher using the key.</div> <div><toggle id="decipher"></toggle></div>
+			</div>
+		</div>
+		<div class="section">
+			<h1>Symbol Map Cipher Details</h1>
+			This cipher uses a technique that does not neccesarily have to be used as a cipher, but for our means will be used as one. There are several instances of websites being capable of mapping one symbol to another, such as Unicode font websites (<a href="https://www.textconverter.net/?text=abc">Text Converter</a>, <a href="https://convertcase.net/unicode-text-converter/">Convert Case</a>, <a href="https://texteditor.com/font-converter/">Text Editor</a>). The symbols used in the sites are designed to be legible to an individual who can read the Latin alphabet, but for the purposes of ciphering, we can use this technique to instead subsitute unreadable symbols into a normal piece of text.<br><br>
+
+			For example, we can subsitute "[" for "a", "]" for "b", and "." for "c". So, "abcccaaabab" would be "[]...[[[][]". These characters do not have any resemblance to the original "abc" letters used.<br>
+			We can extend this to the entire alphabet if we have a set of symbols to match each alphabetical character. However, this cipher does not have to match only the alphabet. By feeding both a set of character to convert from as well as a set of characters to convert to, we can create a key to convert to and from ciphered and unciphered text.<br><br>
+
+			This type of cipher can expand the limits of the subsitution cipher. There are several subsitution techniques which can help in reducing the weakness of traditional subsitution ciphers, more specifically <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a>.
+			<ul>
+				<li>Polygraphic - Instead of converting from one character to another, it is possible to convert multiple characters into a singular cipher symbol. For example, "aa" could translate to "0", and "ab" could translate to ".", and etc.</li>
+				<li>Homophonic - This method can represent one symbol with multiple different alternate possibilities. For example, "a" could cipher into "[" or "]" or "{" or "}", with all of these possible results translating back into "a".</li>
+			</ul>
+
+			Utilizing these concepts, we can create special keys to strengthen a traditionally 1-1 key.
+
+			<h3>Alphabet Keys</h3>
+
+			The first part of our ciphers are the alphabet keys. These contain all of the symbols from an unciphered string you convert into ciphered text. With a custom syntax, we can create a special alphabet to convert from:<br>
+			<dl>
+				<dt>
+					<code class="block">
+						abcdefABC
+					</code><br>
+					<code class="block">
+						fghAS
+					</code>
+				</dt>
+				<dd>
+					This is the default notation for creating an alpabet key, you input all characters you want to have in the alphabet key. For the first case, only the letters "abcdefABC" will be ciphered. For the most basic 1-1 key, that means you have 9 cipher symbols, one for each letter. All characters not in this alphabet key, such as spaces, numbers, newlines, diacritic letters, etc, will be left out and unciphered.
+				</dd>
+				<dt>
+					<code class="block">
+						alphabet-standard
+					</code>
+				</dt>
+				<dd>
+					The alphabet key "alphabet-standard" translates to all 52 lowercase and uppercase letters of the alphabet.
+				</dd>
+
+				<dt>
+					<code class="block">
+						alpha-numeric
+					</code>
+				</dt>
+				<dd>
+					The alphabet key "alpha-numeric" translates to all 52 lowercase and uppercase letters of the alphabet with the addition of 10 numbers, resulting in 62 characters in total.
+				</dd>
+				<dt>
+					<code class="block">
+						full-set
+					</code>
+				</dt>
+				<dd>
+					The alphabet key "full-set" translates to the entire alphabet, its numbers, and every basic keyboard symbol (more specifically ASCII characters 32-126), INCLUDING the newline (ASCII character 10). This is 96 characters in total.
+				</dd>
+				<dt>
+					<code class="block">
+						case:abcdefABC
+					</code><br>
+					<code class="block">
+						case:fghAS
+					</code><br>
+					<code class="block">
+						case:alphabet-standard
+					</code><br>
+					<code class="block">
+						case:alpha-numeric
+					</code>
+				</dt>
+				<dd>
+					By prefixing with "case:", the key will become case-insensitive, either for a custom alphabet key or a pre-made alphabet key.<br>
+					Single-case alphabet-standard is 26 letters.<br>
+					Single-case alpha-numeric is 36 letters.<br>
+					Single-case full-set is 70 letters.
+				</dd>
+				<dt>
+					<code class="block">
+						a,b,cd,EF,abc
+					</code><br>
+					<code class="block">
+						fgh,AS
+					</code><br>
+					<code class="block">
+						a,b,.,\,
+					</code><br>
+					<code class="block">
+						a,b,.,\\
+					</code><br>
+				</dt>
+				<dd>
+					The default notation can be altered in order to group symbols together, creating a polygraphic cipher. For example, if we mapped to the "[", "]", ".", "{", and "}" symbols using the first alphabet key, the string "I know the ways of the abc, EFcd" would transform into "I know the w[ys of the }, {.". Note that longer strings of symbols take priority over shorter symbols, hence why we can match "abc" with "}" and not get the result "[]c".<br>
+					Because commas are a reserved symbol in an alphabet key, they must be escaped with "\" ("\,") as shown in the third key. Because backspaces are also a reserved symbol thanks to this functionality, they must also be escaped with "\" ("\\") as shown in the fourth key.
+				</dd>
+				<dt>
+					<code class="block">
+						bigraphic:standard-alphabet
+					</code><br>
+					<code class="block">
+						trigraphic:case:alpha-numeric
+					</code>
+				</dt>
+				<dd>
+					By prefixing any previous notation with "bigraphic:" or "trigraphic:", we can get an automatically generated bigraphic or trigraphic cipher using all possible symbol combinations in a two-length or three-length block. This results in a symbol set that is either squared or cubed the size of the original symbol set.<br>
+					For the first key example, because the standard-alphabet set is 52 letters, we get an alphabet key of 2704 symbols since that is 52 squared.<br>
+					For the second key example, because the single-case alpha-numeric set is 36 letters, we get an alphabet key of 46656 symbols since that is 36 cubed.<br>
+					That means for either of those ciphers, you will need 2704 or 46656 unique cipher symbols respectively to have a complete cipher, which can be extremely difficult if you do not have the tools to gather and organize that many unique symbols.
+				</dd>
+			</dl>
+
+			<h3>Cipher Keys</h3>
+
+			Everything demonstrated above is a great and wide variety for alphabet keys, but this does not even include the second half of the ciphering, which are the cipher keys. These are the symbols you want your resulting cipher to have.
+
+			<dl>
+				<dt>
+					<code class="block">
+						[]{}.?
+					</code><br>
+					<code class="block">
+						!@#$%^
+					</code>
+				</dt>
+				<dd>
+					Like the alphabet keys, the basic and standard notation to convert from alphabet keys to cipher keys uses no spaces, and each individual character is parsed as a seperate ordered key.<br>
+					If we had an alphabet key of <code class="block">abcdef</code> and a cipher key of <code class="block">[]{}.?</code>, then the string "I am the cat of the rats" is ciphered into "I [m th. {[t o? th. r[ts". All symbols not found in the original alphabet key are untouched, and all symbols that <span style="font-style: italic;">are</span> found are replaced with their counterpart in the specific order they come in.
+				</dd>
+				<dt>
+					<code class="block">
+						[],(),{},<>
+					</code><br>
+				</dt>
+				<dd>
+					We are capable of defining more than one symbol at a time to replace a ciphered character, seperated by commas. In this case, if we had an alphabet key of <code class="block">acer</code> and a cipher key of <code class="block">[],(),{},<></code>, then the string "I can count to three!" is ciphered into "I ()[]n ()ount to th<>{}{}!".<br>
+					In cipher keys, commas and backslashes are handled in the same way that they are with the alphabet keys, being escaped with a backslashed behind them.
+				</dd>
+				<dt>
+					<code class="block">
+						[|],(|),{|},<|>
+					</code><br>
+				</dt>
+				<dd>
+					This cipher key uses the "pipe" symbol "|" to introduce homophony, allowing multiple alternative symbols to appear in the case of a single character. In this case, if we had an alphabet key of <code class="block">acer</code> and a cipher key of <code class="block">[|],(|),{|},<|></code>, then we can have an original string:<br>
+					<code class="block">
+						"I can count to three!" (original)
+					</code><br>
+					And cipher variants of said string below can be valid:<br>
+
+					<code class="block">
+						"I )[n (ount to th{&gt;&lt;!" (ciphered 1)<br>
+						"I )]n )ount to th}&lt;&gt;!" (ciphered 2)<br>
+						"I ([n )ount to th{&lt;&lt;!" (ciphered 3)
+					</code><br>
+					In the case that homophony is used, all homophonic symbols will have an equal randomly generated chance of appearing.<br><br>
+					The pipe symbol must also be escaped in cipher keys to be used on its own due to its reserved meaning.
+				</dd>
+			</dl>
+
+			<h3>Benefits and Drawbacks</h3>
+			Depending on who uses the cipher and how, it can be a very strong cipher. The keys for this cipher can vary very heavily, it has support for all Unicode symbols for both encoding and decoding, and it introduces concepts which can help thwart <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a>.<br><br>
+			A very interesting property of being able to use any Unicode character you desire in the cipher key is that you can intentionally utilize the <a href="#unusual-behavior">unusual behavior</a> of certain symbols when it comes to rendering text. Certain characters appear so small that it is very difficult to seperate them just by looking at them or by using your cursor to select them, and certain symbols have no width at all, making them invisible at a glance as if there were no symbols there in the first place. Common characters like spaces or vowels could be repalced with these anomolous characters to provide a disorienting first-glance at the ciphered text.
+
+			<!-- <h2>Custom Equation Cipher</h2> -->
+		</div>
+		<!-- <div class="section">
+			<h1>Section header</h1>
+
+
+		</div> -->
+	</div>
+
+	<script src="init.js"></script>
+
+	<script>
+	</script>
+
+</body>
+</html>

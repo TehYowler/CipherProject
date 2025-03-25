@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Cipher</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="./common.css" />
+	<link rel="stylesheet" type="text/css" href="./place.css" />
+
+	<style>
+	</style>
+
+</head>
+<body>
+
+	<div id="sidebarWrapper">
+
+		<div class="bar" id="padder"></div>
+		<div class="bar" id="sidebar">
+			<div id="sidebarInner" class="bar max">
+				<button id="pressCipher"    >Main<br>Page</button>
+				<button id="pressCaesar"    >Caesar</button>
+				<button id="pressAlgebraic" >Algebraic</button>
+				<button id="pressPoint"     >Point</button>
+				<button id="pressPlace"     >Place</button>
+				<button id="pressSymbol"    >Symbol</button>
+				<div id="fill"></div>
+			</div>
+		</div>
+		<div class="bar" id="underbar">
+			<div class="verticalCenter" class="max">
+				<h1>All Ciphers</h1>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="title">
+		<span id="textLeft">
+			In-Place Caesar Cipher
+		</span>
+	</div>
+
+	<div id="mainPage">
+		<div class="section">
+			<h1>How-To</h1>
+			<ul>
+				<li>Input the string you want to encrypt or decrypt.</li>
+				<li>Input the key as a number.</li>
+				<li>If you are decrypting, use the key used to originally encrypt the string and press the "decipher" button.</li>
+			</ul>
+
+		</div>
+
+		<div class="section">
+			<h1>Cipher Input</h1>
+			<div id="cipherInput">
+				<div style="grid-column: span 1">The string you want to cipher.</div> <textarea id="cipherFrom"></textarea>
+				<div style="grid-column: span 1">The cipher key number.</div> <textarea id="key"></textarea>
+				<div style="grid-column: span 1">Decipher using the key.</div> <div><toggle id="decipher"></toggle></div>
+			</div>
+		</div>
+		<div class="section">
+			<h1>In-Place Cipher Details</h1>
+
+			<h2>In-Place Caesar Cipher</h2>
+
+			Like the Caesar Cipher, a cipher can be made to shift a set of characters in a direction. However, two special things are done here: all characters are shifted in-place (no special symbols are added or removed), and characters are treated based on their Unicode code point value. By using the <code>ord()</code> and <code>chr()</code> of Python (or similar methods like JS's <code>charCodeAt()</code> or <code>fromCharCode()</code> functions), one can turn individual characters in a string into numbers and vice versa based on their code points according to <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">Unicode</a>.
+
+			With this cipher, we order the code points of every character in the string in ascending order, and then we shift each code point to the right or left.<br>
+			For example, "acdAAABCDDD" maps to "97 99 100 65 65 65 66 67 68 68 68". Sorted in ascending order, we get "65 66 67 68 97 99 100". Shifting over left one gives "66 67 68 97 99 100 65". Thus, 65 maps to 66, 66 maps to 67, 68 maps to 97, etc.<br>
+			<code>
+			97 99&nbsp; 100 65 65 65 66 67 68 68 68<br>
+			↓&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓<br>
+			99 100 65&nbsp; 66 66 66 67 68 97 97 97<br>
+			</code>
+
+			This new code matches to cdABBBCDaaa, which is made up of all of the same letters from the previous string without adding any additional letters, unlike the Code Point Cipher where new letters could appear and old ones could vanish.
+
+			<h3>Benefits and Drawbacks</h3>
+
+			This specific type of cipher, to our knowledge, is not widely available at a first-glance. This was simply a cipher created on a whim for this project. Thus, it is probably not a stock cipher you would find online in any place other than here. To crack it, it would require a more advanced knowledge of Unicode code points as well as general cryptography. It will absolutely go under the radar of text parsers, and very likely under the radar of current modern-day AI. Still, however, this cipher is subject to <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way, akin to the original Caesar cipher.<br><br>
+
+			HOWEVER, unlike the original Caesar cipher, this cipher is not restricted to the Latin alphabet only. All symbols for languages that Unicode has support for can be used, so coding messages in different languages can help mess up frequency analysis, as different analysis techniques will have to be used for different languages. Distribution analysis for a language such as written Chinese would be extremely hard to pull off compared to English, as the number of symbols used in the language for normal day-to-day conversation ranges in the thousands. This completely blows English out of the water, having the most-used symbols be only 52 lowercase+uppercase letters, with 10 numeric symbols, a space symbol, a comma and period, and newlines. However, since numbers/spaces/punctuation/newlines are MUCH less common than normal letters, and because uppercase is much less common than lowercase without special text methods, the English language crumbles hard from Frequency Analysis due to its lack of numerous evenly-distributed symbols. Innate and unambiguous multi-language support is an EXTREME upside over the traditional Caesar cipher in the hands of the right person.<br>
+
+			<span style="color:rgb(0,255,0)">Note that because all characters are in-place and do not use extra arbitrary symbols that reside outside of the original string, the resulting symbols are not subject to <a href="#unusual-behavior">unusual behavior</a>.</span> The only common odd-case that should occur would be if newlines get shuffled into a common character, or if your method of storing strings snips consecutive spaces in strings were spaces get shuffled to repeat.<br>
+			<span style="color:orange">One major weakness this cipher has compared to the something like the Code Point Caesar Cipher is that the ciphered text is made enitrely out of the symbols in the original text due to being completely in-place. This means that while the use of arbitrary symbols that may cause unusual behavior will not occur, the general form of the original string can still be inferred DIRECTLY from the ciphered text like the language. This is a major aspect of weakness for the cipher.</span>
+
+			<!-- <h2>Custom Equation Cipher</h2> -->
+		</div>
+		<!-- <div class="section">
+			<h1>Section header</h1>
+
+
+		</div> -->
+	</div>
+
+	<script src="init.js"></script>
+
+	<script>
+	</script>
+
+</body>
+</html>

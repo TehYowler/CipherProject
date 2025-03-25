@@ -5,7 +5,8 @@
 
 	<title>Cipher</title>
 	<meta charset="utf-8" />
-	<link rel="stylesheet" type="text/css" href="./public/front.css" />
+	<link rel="stylesheet" type="text/css" href="./common.css" />
+	<link rel="stylesheet" type="text/css" href="./front.css" />
 
 	<style>
 	</style>
@@ -18,11 +19,12 @@
 		<div class="bar" id="padder"></div>
 		<div class="bar" id="sidebar">
 			<div id="sidebarInner" class="bar max">
-				<button id="pressCipher"     >Cipher</button>
-				<button id="press1"          >Holder<br>1</button>
-				<button id="press2"          >Holder<br>2</button>
-				<button id="press3"          >Holder<br>3</button>
-				<button id="press4"          >Holder<br>4</button>
+				<button id="pressCipher"    >Main<br>Page</button>
+				<button id="pressCaesar"    >Caesar</button>
+				<button id="pressAlgebraic" >Algebraic</button>
+				<button id="pressPoint"     >Point</button>
+				<button id="pressPlace"     >Place</button>
+				<button id="pressSymbol"    >Symbol</button>
 				<div id="fill"></div>
 			</div>
 		</div>
@@ -46,10 +48,18 @@
 			Welcome to Enter the Crypt! Hover over the sidebar on the left to display your options. At the top of it you can:
 			<ul>
 				<li>Access the main info page (here).</li>
-				<li>Go to the cipher page.</li>
-				<li>(extra functionality).</li>
+				<li>Access or use any specific cipher and its information.</li>
 			</ul>
-			By interacting with the bottom portion, you can access saved ciphers.
+			By interacting with the bottom portion, you can access saved ciphers.<br><br>
+
+			<!-- Available ciphers:
+			<ul>
+				<li><a href="./public/caesar.html">Caesar Cipher</a></li>
+				<li><a href="./public/algebraic.html">Custom Algebraic Cipher</a></li>
+				<li><a href="./public/point.html">Code-Point Caesar Cipher</a></li>
+				<li><a href="./public/place.html">In-Place Caesar Cipher</a></li>
+				<li><a href="./public/symbol.html">Symbol Map Cipher</a></li>
+			</ul> -->
 		</div>
 		<div class="section">
 			<h1>Inner Workings of the Ciphers in "Enter the Crypt"</h1>
@@ -174,20 +184,20 @@
 				</dd>
 				<dt>
 					<code class="block">
-						lower:abcdefABC
+						case:abcdefABC
 					</code><br>
 					<code class="block">
-						upper:fghAS
+						case:fghAS
 					</code><br>
 					<code class="block">
-						lower:alphabet-standard
+						case:alphabet-standard
 					</code><br>
 					<code class="block">
-						upper:alpha-numeric
+						case:alpha-numeric
 					</code>
 				</dt>
 				<dd>
-					By prefixing with "lower:" or "upper:", the string key will only use lowercase or uppercase letters and become case-insensitive, either for a custom alphabet key or a pre-made alphabet key.<br>
+					By prefixing with "case:", the key will become case-insensitive, either for a custom alphabet key or a pre-made alphabet key.<br>
 					Single-case alphabet-standard is 26 letters.<br>
 					Single-case alpha-numeric is 36 letters.<br>
 					Single-case full-set is 70 letters.
@@ -215,7 +225,7 @@
 						bigraphic:standard-alphabet
 					</code><br>
 					<code class="block">
-						trigraphic:lower:alpha-numeric
+						trigraphic:case:alpha-numeric
 					</code>
 				</dt>
 				<dd>
@@ -286,6 +296,8 @@
 
 		</div> -->
 	</div>
+
+	<script src="init.js"></script>
 
 	<script>
 	</script>

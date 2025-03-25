@@ -48,20 +48,30 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 		urlParts = [string for string in urlParts if string.strip()];
 
 		if(self.url.path == "/"):
-			with open('./public/front.html',"r") as file:
-				page = file.read();
 
-			self.send_response(200)
-			self.send_header("Content-Type", "text/html")
+			self.send_response(302)
+			self.send_header('Location', "./public/front.html")
 			self.end_headers()
-			self.wfile.write(page.encode("utf-8"))
+
+
+			# with open('./public/front.html',"r") as file:
+			# 	page = file.read();
+
+			# self.send_response(200)
+			# self.send_header("Content-Type", "text/html")
+			# self.end_headers()
+			# self.wfile.write(page.encode("utf-8"))
 			return;
 
 		if(len(urlParts) > 1 and urlParts[0] == "public"):
 			with open('./' + "/".join(urlParts),"r") as file:
 				give = file.read();
-				self.wfile.write(give.encode("utf-8"))
-				self.send_response(200)
+
+			self.send_response(200)
+			if(urlParts[-1].split(".")[-1] == "html"):
+				self.send_header("Content-Type", "text/html")
+			self.end_headers()
+			self.wfile.write(give.encode("utf-8"))
 
 	def do_POST(self):
 		self.do_GET()

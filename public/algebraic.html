@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Cipher</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="./common.css" />
+	<link rel="stylesheet" type="text/css" href="./algebraic.css" />
+
+	<style>
+	</style>
+
+</head>
+<body>
+
+	<div id="sidebarWrapper">
+
+		<div class="bar" id="padder"></div>
+		<div class="bar" id="sidebar">
+			<div id="sidebarInner" class="bar max">
+				<button id="pressCipher"    >Main<br>Page</button>
+				<button id="pressCaesar"    >Caesar</button>
+				<button id="pressAlgebraic" >Algebraic</button>
+				<button id="pressPoint"     >Point</button>
+				<button id="pressPlace"     >Place</button>
+				<button id="pressSymbol"    >Symbol</button>
+				<div id="fill"></div>
+			</div>
+		</div>
+		<div class="bar" id="underbar">
+			<div class="verticalCenter" class="max">
+				<h1>All Ciphers</h1>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="title">
+		<span id="textLeft">
+			Custom Algebraic Cipher
+		</span>
+	</div>
+
+	<div id="mainPage">
+		<div class="section">
+			<h1>How-To</h1>
+			<ul>
+				<li>Input the string you want to encrypt or decrypt.</li>
+				<li>Input the key as an equation based on the varible "x" (where "x" is the code point of any given character).</li>
+				<li>If you are decrypting, use the key used to originally encrypt the string and press the "decipher" button.</li>
+			</ul>
+
+		</div>
+
+		<div class="section">
+			<h1>Cipher Input</h1>
+			<div id="cipherInput">
+				<div style="grid-column: span 1">The string you want to cipher.</div> <textarea id="cipherFrom"></textarea>
+				<div style="grid-column: span 1">The cipher key equation.</div> <textarea id="key"></textarea>
+				<div style="grid-column: span 1">Decipher using the key.</div> <div><toggle id="decipher"></toggle></div>
+			</div>
+		</div>
+
+		<div class="section">
+			<h1>Algebraic Cipher Details</h1>
+			By using the <code>ord()</code> and <code>chr()</code> of Python (or similar methods like JS's <code>charCodeAt()</code> or <code>fromCharCode()</code> functions), one can turn individual characters in a string into numbers and vice versa based on their code points according to <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">Unicode</a>. This numeric alteration of a string of text allows for ciphers to be represented as mathematical equations, which is implemented by allowing users to input an equation to act as a cipher. <span style="color: yellow">Uppercase letters have different code points than lowercase letters.</span>
+
+			<h2>Rules</h2>
+
+			<ol>
+				<li>The variable "x" must be used, with no other variables present.</li>
+				<li>The equation should pass both the vertical line test AND the horizontal line test for any given inputs. In other words, there should be no repeats in either input or output for a given relation. For this reason, cyclic functions like sine waves would be invalid most of the time since they are periodic and pass through the same inputs repeatedly (failing the horizontal line test). Even-degree polynomials (e.g. parabolas) or polynomials that have bumps also can fail this, like parabolas (from squaring) that fail if there are both negative and positive results.</li>
+				<li>All outputs must create an integer, and exactly an integer with no decimals.</li>
+				<li>All results must range from 0-1114111 due to the Unicode limit.</li>
+				<li>(extra functionality).</li>
+			</ol>
+
+			<h2>Benefits and Drawbacks</h2>
+			The upsides of this technique is that it is not nearly as easily reversable as a Caesar cipher, and the key can vary VERY heavily depending on the mathematical proficiency one has to write equations that satisfy the rules above. A text parser will not be able to get any information out of it, and depending on what chatbot sees it, an AI likely will not be capable of reversing the string. However, it can be very clunky for a person who wants a quick-and-done encyption to come up with a unique equation each time they want to generate a unique key, and it is very likely a person will simply resort to using a simple linear equation each time, which can be made for more predictable keys. Also, while this can technically support all Unicode symbols from any different language, when the code points of characters that go into certain boundaries, it can be difficult to keep code points within the range of 0-1114111. Also, because each conversion is 1-1, this cipher is subject to <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way like the Caesar cipher.<br>
+			<span style="color: yellow">Additionally, because the equations can spit out arbitrary Unicode characters from the equation used, the resulting symbols are subject to the aforementioned <a href="#unusual-behavior">unusual behavior</a></span>.
+			<!-- <h2>Custom Equation Cipher</h2> -->
+		</div>
+		<!-- <div class="section">
+			<h1>Section header</h1>
+
+
+		</div> -->
+	</div>
+
+	<script src="init.js"></script>
+
+	<script>
+	</script>
+
+</body>
+</html>
