@@ -1,12 +1,17 @@
-import json;
+import json; #For JSON parsing from request bodies.
 from functools import cached_property;
+
+#Basic server and URL struff:
 from http.cookies import SimpleCookie;
 from http.server import BaseHTTPRequestHandler;
 from urllib.parse import parse_qsl, urlparse;
 from http.server import HTTPServer;
-import cipher;
-import http;
 
+import cipher; #Custom cipher module.
+
+
+#The structure of the web server originated from:
+#https://realpython.com/python-http-server/#serve-static-and-dynamic-content-programmatically
 class WebRequestHandler(BaseHTTPRequestHandler):
 
 	def get_response(self):
@@ -49,6 +54,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 		urlParts = self.url.path.split('/');
 		urlParts = [string for string in urlParts if string.strip()];
 
+		#The main page at the root redirects to the front page.
 		if(self.url.path == "/"):
 			self.send_response(302)
 			self.send_header('Location', "./public/front.html")
@@ -56,6 +62,35 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
 			return;
 
+		#Serve all files in the public folder.
+		if(len(urlParts) > 1 and urlParts[0] == "public"):
+			try:
+				with open('./' + "/".join(urlParts),"r") as file:
+					give = file.read();
+
+				#Send a response indicating that everything is ok.
+				self.send_response(200);
+
+				#Send the appropriate content type depending on this file.
+				if(urlParts[-1].endswith(".html")):
+					self.send_header("Content-Type", "text/html")
+				elif(urlParts[-1].endswith(".js")):
+					self.send_header("Content-Type", "text/javascript")
+				elif(urlParts[-1].endswith(".css")):
+					self.send_header("Content-Type", "text/css")
+				self.end_headers();
+
+				#Then write and give the content.
+				self.wfile.write(give.encode("utf-8"));
+			except OSError:
+				#If an OSError occurs with opening or reading the file, the path was likely wrong and return a 400 error.
+				self.send_error(400, "Could not serve content.")
+			except:
+				#If a miscellaneous error occurs not related to finding and opening the file, return a 404 error.
+				self.send_error(404, "Could not serve content.")
+			return;
+
+		#Below are all of the handlers for each cipher type/
 		if(self.url.path == "/cipher_caesar"):
 			try:
 				data = json.loads(self.post_data.decode("utf-8"));
@@ -128,6 +163,8 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 				self.wfile.write(send);
 			return;
 
+		#Since the length of the Symbol Map Cipher matters, and because it might not be immediately obvious thanks to keywords like "alphabet-standard"
+		#or "bigraphic", the server allows the ability to read a key and getn its true length.
 		if(self.url.path == "/cipher_symbol_key_length"):
 			try:
 				data = json.loads(self.post_data.decode("utf-8"));
@@ -142,78 +179,11 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 				self.wfile.write(send);
 			return;
 
-		if(self.url.path == "/cookie_save"):
-			try:
-				cookies_string = self.headers.get('Cookie');
-
-				cookies = SimpleCookie();
-				if(cookies_string):
-					cookies.load(cookies_string);
-
-				if('stored_cipher_cookie' not in cookies):
-					cookies['stored_cipher_cookie'] = "[]";
-
-				dataReq = json.loads(self.post_data.decode("utf-8"));
-				try:
-					dataCookie = json.loads(cookies['stored_cipher_cookie'].value);
-				except json.JSONDecodeError:
-					raise Exception("Malformed cookie data!");
-
-				if("remove" in dataReq):
-					dataReq["remove"] = int(dataReq["remove"]);
-					# print(dataReq["remove"])
-					dataCookie = dataCookie[0:dataReq["remove"]] + dataCookie[dataReq["remove"] + 1:];
-				else:
-					dataCookie.append(dataReq);
-
-				cookies['stored_cipher_cookie'] = json.dumps(dataCookie);
-				self.send_response(200);
-				for morsel in cookies.values():
-					morsel['max-age'] = 2147483647;
-					self.send_header("Set-Cookie", morsel.OutputString());
-				self.end_headers();
-			except Exception as e:
-				print(e)
-				self.send_error(400, "Could not save cookie.")
-			return;
-
-		if(self.url.path == "/cookie_get"):
-			try:
-				cookies_string = self.headers.get('Cookie');
-
-				cookies = SimpleCookie();
-				if(cookies_string):
-					cookies.load(cookies_string);
-
-				if('stored_cipher_cookie' not in cookies):
-					cookies['stored_cipher_cookie'] = "[]";
-
-				self.send_response(200);
-				self.send_header("Content-Type", "text/plain")
-				self.end_headers();
-				self.wfile.write(cookies['stored_cipher_cookie'].value.encode("utf-8"));
-
-			except Exception as e:
-				print(e)
-				self.send_error(400, "Could not save cookie.")
-			return;
-
-		if(len(urlParts) > 1 and urlParts[0] == "public"):
-			with open('./' + "/".join(urlParts),"r") as file:
-				give = file.read();
-
-			self.send_response(200)
-			if(urlParts[-1].split(".")[-1] == "html"):
-				self.send_header("Content-Type", "text/html")
-			elif(urlParts[-1].split(".")[-1] == "js"):
-				self.send_header("Content-Type", "text/javascript")
-			self.end_headers()
-			self.wfile.write(give.encode("utf-8"))
-
+	#Handle posts and gets the same way.
 	def do_POST(self):
 		self.do_GET()
 
-
+#Start a server on port 8080 if the file is being ran directly.
 if __name__ == "__main__":
-    server = HTTPServer(("0.0.0.0", 8080), WebRequestHandler)
-    server.serve_forever()
+    server = HTTPServer(("0.0.0.0", 8080), WebRequestHandler);
+    server.serve_forever();
