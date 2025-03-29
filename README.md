@@ -1,1 +1,9 @@
 This is a college project that ciphers text using Python's "ord" and "chr" functions and makes that functionality available in an easy to use interface.
+
+# Breakdown
+"cipher.py" holds all of the priamry ciphering functions used.
+"server.py" starts a local web server to display HTML visuals in something like a browser.
+The public folder holds all files indiscriminately served by the server, which includes all HTML, CSS, and JS files/code.
+
+# Instructions
+Simply run the "server.py" file and then go to http://localhost:8080. Explore around, read up on the different cipher types, use the ciphers, and even save presets for them if you have special specific ones you want to save for later. Presets are stored through the browser's local storage and persist between server activation. Then, when you're done, close the server (e.g. Ctrl+C through a terminal or closing the IDE the code is running through.)
