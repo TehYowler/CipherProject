@@ -14,6 +14,12 @@ import re
 #RNG for homophony in the Symbol Map Cipher.
 import random;
 
+def unique(inputArray: Iterable):
+	seen = set()
+	uniqueArr = [element for element in inputArray if element not in seen and (seen.add(element) or True)];
+	return uniqueArr;
+	#Credits to "https://www.geeksforgeeks.org/python-get-unique-values-list#using-list-comprehension" for the solution to get unique elements in order.
+
 #Codeword operations for the Symbol Map Cipher.
 def lowered(inputArray: Iterable):
 	seen = set()
@@ -357,14 +363,14 @@ def escapeCustomKey1(string) -> list[str]:
 			continue;
 
 		if(char == ","):
-			if(case == 1):
+			if(case == 1 and poly == 0):
 				escapeBuffer = lowered(escapeBuffer);
 				escapeBuffer = [char.lower() + "|" + char.upper() for char in escapeBuffer];
-
-			if(poly == 1):
-				escapeBuffer = bigraphic(escapeBuffer);
-			elif(poly == 2):
-				escapeBuffer = trigraphic(escapeBuffer);
+			else:
+				if(poly == 1):
+					escapeBuffer = bigraphic(escapeBuffer);
+				elif(poly == 2):
+					escapeBuffer = trigraphic(escapeBuffer);
 
 			escaperMain.append(escapeBuffer);
 
@@ -375,14 +381,14 @@ def escapeCustomKey1(string) -> list[str]:
 		escapeBuffer.append(char);
 
 	if(escapeBuffer):
-		if(case == 1):
+		if(case == 1 and poly == 0):
 			escapeBuffer = lowered(escapeBuffer);
 			escapeBuffer = [char.lower() + "|" + char.upper() for char in escapeBuffer];
-
-		if(poly == 1):
-			escapeBuffer = bigraphic(escapeBuffer);
-		elif(poly == 2):
-			escapeBuffer = trigraphic(escapeBuffer);
+		else:
+			if(poly == 1):
+				escapeBuffer = bigraphic(escapeBuffer);
+			elif(poly == 2):
+				escapeBuffer = trigraphic(escapeBuffer);
 
 		escaperMain.append(escapeBuffer);
 
@@ -474,29 +480,40 @@ def symbolMapCipher(keyAlphabet: str, keyCipher: str, text: str, decipher: bool 
 	#Then, create a dictionary of keys: the alphabet to convert from, and the cipher to convert to.
 	conversion = {key: value for key, value in zip(escaperAlphabet, escaperCipher)};
 
-	#Then, sort the dictionary so that longer strings come first, so that smaller finds do not cannibalize larger finds.
-	sort = list(conversion.keys());
-	sort.sort(key = lambda string: len(string), reverse=True);
-	sort = {i: conversion[i] for i in sort};
+	#Then, for all homophony cases in the alphabet portion of the keys, create a seperate key:value pair for each one.
+	#This is sone as a seperate dictionary so that the length of the keys can be assessed for each case, even if homophonic.
+	choiceConversion = {};
+	for alphabet,cipher in conversion.items():
+		replacingChoices = escapeCustomKey2(alphabet);
+		for per in replacingChoices:
+			choiceConversion[per] = cipher;
 
-	# import json;
-	# print(json.dumps(sort,sort_keys=True, indent=4));
-	# print(sort)
+	#Then, to search for the highest to the lowest length, we need an array containing each type of length.
+	#With doing this we will operate by length before performing any replacements.
+	lengths = unique([len(string) for string in choiceConversion.keys()]);
 
-	#Then, search the string and begin replacement.
-	stringReturn = "";
+	# for alphabet, cipher in sort.items():
+	# 	replacing = "|".join(re.escape(escaped) for escaped in escapeCustomKey2(alphabet));
+	# 	choices = escapeCustomKey2(cipher);
+	# 	text = re.sub(replacing,lambda match: random.choice(choices),text);
 
-	for alphabet, cipher in sort.items():
-		# replacing = "|".join([re.escape(escaped) for escaped in alphabet.split("|")])
-		replacing = "|".join(re.escape(escaped) for escaped in escapeCustomKey2(alphabet));
-		choices = escapeCustomKey2(cipher);
-		# choice = random.choice(choices);
-		# text = text.replace(alphabet,cipher);
-		# print(replacing)
-		# print(choices)
-		# print(text)
-		# print()
-		text = re.sub(replacing,lambda match: random.choice(choices),text);
+	for length in lengths:
+		offset = 0;
+		while(offset + length < len(text) + 1):
+			snippet = text[offset:offset + length];
+			for alphabet, cipher in choiceConversion.items():
+				if(len(alphabet) != length):
+					continue;
+				if(snippet == alphabet):
+					text = text[0:offset] + cipher + text[offset + length:];
+					offset += len(cipher) - 1;
+					break;
+			offset += 1;
+
+
+		# replacing = "|".join(re.escape(escaped) for escaped in escapeCustomKey2(alphabet));
+		# choices = escapeCustomKey2(cipher);
+		# text = re.sub(replacing,lambda match: random.choice(choices),text);
 
 	return text;
 
