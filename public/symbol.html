@@ -30,7 +30,8 @@
 		</div>
 		<div class="bar" id="underbar">
 			<div class="verticalCenter" class="max">
-				<h1>All Ciphers</h1>
+				<h1>All Presets</h1>
+				<div id="cipherList"></div>
 			</div>
 		</div>
 
@@ -51,20 +52,44 @@
 				<li>Input the alphabet key as a list of symbols to convert from.</li>
 				<li>If you are decrypting, use the key used to originally encrypt the string and press the "decipher" button.</li>
 			</ul>
-			Refer to the details below for the full syntax of this cipher.
+			Refer to the details below for the full syntax of this cipher.<br>
+			By saving a preset of this cipher, the browser's local data is updated to store the cipher and alphabet keys.
 
 		</div>
 
 		<div class="section">
 			<h1>Cipher Input</h1>
 			<div id="cipherInput">
-				<div style="grid-column: span 1">The string you want to cipher.</div> <textarea id="cipherFrom"></textarea>
+				<div class="gridRight"><p style="text-align: center; display: inline-block; width: 100%;">The string to cipher.</p><br>
+				<button class="dataButton" id="importClip">Paste from clipboard</button>
+				<input type="file" accept="text/*" id="importText" style="display: none;"/>
+				<button id="importTextRepresent" class="dataButton">Input string from text file</button></div> <textarea id="cipherFrom"></textarea>
 
-				<div style="grid-column: span 1">The cipher key.</div> <textarea style="grid-column: span 1" id="key"></textarea>
-				<div style="grid-column: span 1; position: relative; left: 30px;">The alphabet key.</div> <textarea style="grid-column: span 1" id="alphabet"></textarea>
+				<div class="gridRight"><p style="text-align: center; display: inline-block; width: 100%;">The alphabet key.</p><br><br>
+				<input type="file" accept="text/*" id="alphabetImportFile" style="display: none;"/>
+				<button id="alphabetImport">Import Key from Text File</button><br>
+				<button id="alphabetExport">Export Key to Text File</button><br>
+				<div id="alphabetKeyLength"></div></div> <textarea style="grid-column: span 1" id="alphabet"></textarea>
+				<div class="gridRight"><p style="text-align: center; display: inline-block; width: 100%;">The cipher key.</p><br><br>
+				<input type="file" accept="text/*" id="cipherImportFile" style="display: none;"/>
+				<button id="keyImport">Import Key from Text File</button><br>
+				<button id="keyExport">Export Key to Text File</button><br>
+				<div id="keyLength"></div></div> <textarea style="grid-column: span 1" id="key"></textarea>
 
-				<div style="grid-column: span 1">Decipher using the key.</div> <div><toggle id="decipher"></toggle></div>
+				<div class="gridCenter">Decipher using the key.</div> <div style="grid-column: span 1"><toggle id="decipher"></toggle></div>
+				<div class="gridCenter">Preview the result.</div> <div style="grid-column: span 1"><toggle data-clicked="1" id="preview"></toggle></div>
 			</div>
+
+			<div id="dataButtonWrapper">
+				<div></div>
+				<button class="dataButton" id="saveResultClip">Save result to clipboard</button>
+				<div style="flex: 0 0 10%"></div>
+				<button class="dataButton" id="saveResultTxt">Save result to text file</button>
+				<div style="flex: 0 0 10%"></div>
+				<textarea class="dataButton" placeholder="Cipher preset - type preset name" id="storePreset"></textarea>
+				<div></div>
+			</div>
+			<div id="showPreview"></div>
 		</div>
 		<div class="section">
 			<h1>Symbol Map Cipher Details</h1>
@@ -168,10 +193,8 @@
 					</code>
 				</dt>
 				<dd>
-					By prefixing any previous notation with "bigraphic:" or "trigraphic:", we can get an automatically generated bigraphic or trigraphic cipher using all possible symbol combinations in a two-length or three-length block. This results in a symbol set that is either squared or cubed the size of the original symbol set.<br>
-					For the first key example, because the standard-alphabet set is 52 letters, we get an alphabet key of 2704 symbols since that is 52 squared.<br>
-					For the second key example, because the single-case alpha-numeric set is 36 letters, we get an alphabet key of 46656 symbols since that is 36 cubed.<br>
-					That means for either of those ciphers, you will need 2704 or 46656 unique cipher symbols respectively to have a complete cipher, which can be extremely difficult if you do not have the tools to gather and organize that many unique symbols.
+					By prefixing any previous notation with "bigraphic:" or "trigraphic:", we can get an automatically generated bigraphic or trigraphic cipher using all possible symbol combinations in a two-length or three-length block. This results in a symbol set that is either squared or cubed the size of the original symbol set respectively.<br>
+					For the first key example, because the standard-alphabet set is 52 letters, we get an alphabet key of 2704 symbols since that is 52 squared. That means for that cipher, you will need 2704 unique cipher symbols to have a complete cipher, which can be extremely difficult if you do not have the tools to gather and organize that many unique symbols.
 				</dd>
 			</dl>
 
@@ -225,7 +248,7 @@
 
 			<h3>Benefits and Drawbacks</h3>
 			Depending on who uses the cipher and how, it can be a very strong cipher. The keys for this cipher can vary very heavily, it has support for all Unicode symbols for both encoding and decoding, and it introduces concepts which can help thwart <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a>.<br><br>
-			A very interesting property of being able to use any Unicode character you desire in the cipher key is that you can intentionally utilize the <a href="#unusual-behavior">unusual behavior</a> of certain symbols when it comes to rendering text. Certain characters appear so small that it is very difficult to seperate them just by looking at them or by using your cursor to select them, and certain symbols have no width at all, making them invisible at a glance as if there were no symbols there in the first place. Common characters like spaces or vowels could be repalced with these anomolous characters to provide a disorienting first-glance at the ciphered text.
+			A very interesting property of being able to use any Unicode character you desire in the cipher key is that you can intentionally utilize the <a href="#unusual-behavior">unusual behavior</a> of certain symbols when it comes to rendering text. Certain characters appear so small that it is very difficult to seperate them just by looking at them or by using your cursor to select them, and certain symbols have no width at all, making them invisible at a glance as if there were no symbols there in the first place. Common characters like spaces or vowels could be replaced with these anomolous characters to provide a disorienting first-glance at the ciphered text.
 
 			<!-- <h2>Custom Equation Cipher</h2> -->
 		</div>
@@ -239,6 +262,118 @@
 	<script src="init.js"></script>
 
 	<script>
+
+	setSaveCipher(async() => fetch("/cipher_symbol", {
+		method: "POST",
+		body: JSON.stringify({
+			text: document.getElementById('cipherFrom').value,
+			key: document.getElementById('key').value,
+			alphabet: document.getElementById('alphabet').value,
+			revert: document.getElementById('decipher').dataset.clicked === "1"
+		})
+	}).then(res => {
+		if(res.status === 200)
+			return res.text();
+		else
+			throw new Error("Cipher failed.");
+	}));
+
+	updateKey = function(id) {
+		return function() {
+			const element = document.getElementById(id);
+			fetch("/cipher_symbol_key_length", {
+				method: "POST",
+				body: JSON.stringify({
+					key: this.value,
+				})
+			}).then(res => {
+				if(res.status === 200)
+					res.text().then(text => element.textContent = text + " key symbols");
+				else
+					throw new Error("Failed to get key length.");
+			});
+		}
+	}
+
+	document.getElementById('cipherFrom').dispatchEvent(new Event("change"));
+
+	key = document.getElementById('key');
+	alphabet = document.getElementById('alphabet');
+
+	updateKey("alphabetKeyLength").bind(alphabet)();
+	updateKey("keyLength").bind(key)();
+
+	alphabet.addEventListener("keydown",() => setTimeout(updateKey("alphabetKeyLength").bind(alphabet),0));
+	alphabet.addEventListener("change",updateKey("alphabetKeyLength"));
+
+	key.addEventListener("keydown",() => setTimeout(updateKey("keyLength").bind(key),0));
+	key.addEventListener("change",updateKey("keyLength"));
+
+	let alphabetImport = document.getElementById('alphabetImport'); //get file stuff do thing stuff
+	let alphabetExport = document.getElementById('alphabetExport'); //get file stuff do thing stuff
+	let keyImport      = document.getElementById('keyImport')     ; //get file stuff do thing stuff
+	let keyExport      = document.getElementById('keyExport')     ; //get file stuff do thing stuff
+
+	document.getElementById('alphabetImportFile').addEventListener("change", function() {
+		let files = this.files;
+		if (!files || files.length !== 1) return;
+		let file = files[0];
+		file.text().then(text => {
+			alphabet.value = text;
+			updateKey("alphabetKeyLength").bind(alphabet)();
+		});
+
+	});
+
+	alphabetImport.addEventListener("click", (event) => {
+		document.getElementById("alphabetImportFile").click();
+	})
+
+	alphabetExport.addEventListener('click', () => {
+		download(alphabet.value,"alphabet-key.txt","text/plain")
+	})
+
+	document.getElementById('cipherImportFile').addEventListener("change", function() {
+		let files = this.files;
+		if (!files || files.length !== 1) return;
+		let file = files[0];
+		file.text().then(text => {
+			key.value = text;
+			updateKey("keyLength").bind(key)();
+		});
+	});
+
+	keyImport.addEventListener("click", (event) => {
+		document.getElementById("cipherImportFile").click();
+	})
+
+	keyExport.addEventListener('click', () => {
+		download(key.value,"cipher-key.txt","text/plain")
+	})
+
+	if(urlDissect !== null && typeof urlDissect === "number") {
+		json = getAllLocalData();
+		preset = json[urlDissect];
+		document.getElementById('key').value = preset.key;
+		document.getElementById('alphabet').value = preset.alphabet;
+		updateKey("alphabetKeyLength").bind(alphabet)();
+		updateKey("keyLength").bind(key)();
+	}
+
+	document.getElementById('storePreset').addEventListener('keydown', function(event) {
+		if(event.key !== "Enter") return;
+		event.preventDefault();
+		event.stopPropagation();
+		saveLocalData({
+			name: this.value,
+			type: "symbol",
+			key: document.getElementById('key').value,
+			alphabet: document.getElementById('alphabet').value
+		});
+		updateCipherList();
+		this.value = "";
+	});
+
 	</script>
 
 </body>

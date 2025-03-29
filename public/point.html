@@ -30,7 +30,8 @@
 		</div>
 		<div class="bar" id="underbar">
 			<div class="verticalCenter" class="max">
-				<h1>All Ciphers</h1>
+				<h1>All Presets</h1>
+				<div id="cipherList"></div>
 			</div>
 		</div>
 
@@ -47,23 +48,47 @@
 			<h1>How-To</h1>
 			<ul>
 				<li>Input the string you want to encrypt or decrypt.</li>
-				<li>Input the key as a number.</li>
+				<li>Input the key as a number. Positives shift right, negatives shift left.</li>
 				<li>If you are decrypting, use the key used to originally encrypt the string and press the "decipher" button.</li>
 			</ul>
+			By saving a preset of this cipher, the browser's local data is updated to store the offset key and ranges for this code-point caesar cipher.
 
 		</div>
 
 		<div class="section">
 			<h1>Cipher Input</h1>
 			<div id="cipherInput">
-				<div style="grid-column: span 1">The string you want to cipher.</div> <textarea id="cipherFrom"></textarea>
+				<div class="gridRight"><p style="text-align: center; display: inline-block; width: 100%;">The string to cipher.</p><br>
+				<button class="dataButton" id="importClip">Paste from clipboard</button>
+				<input type="file" accept="text/*" id="importText" style="display: none;"/>
+				<button id="importTextRepresent" class="dataButton">Input string from text file</button></div> <textarea id="cipherFrom"></textarea>
 
 				<div style="grid-column: span 1">The cipher key number.</div> <textarea style="grid-column: span 1" id="key"></textarea>
-				<div style="grid-column: span 1; position: relative; left: 30px;">The cipher range.</div> <textarea style="grid-column: span 1" id="range"></textarea>
+				<!-- <div style="grid-column: span 1; position: relative; left: 30px;">The cipher range.</div> -->
+				<div style="grid-column: span 2" id="range">
+					<span style="display: inline-block; margin: 0 10px;">The cipher range.</span>
+					<textarea id="rangeLower"></textarea> -
+					<textarea id="rangeUpper"></textarea>
+					<span style="display: inline-block; margin: 0 10px;">Input text range.</span>
+					<div id="rangeLowerPreview"></div> -
+					<div id="rangeUpperPreview"></div>
+				</div>
 
-				<div style="grid-column: span 1">Decipher using the key.</div> <div><toggle id="decipher"></toggle></div>
+				<div style="grid-column: span 1">Decipher using the key.</div> <div style="grid-column: span 1"><toggle id="decipher"></toggle></div>
+				<div style="grid-column: span 1">Preview the result.</div> <div style="grid-column: span 1"><toggle data-clicked="1" id="preview"></toggle></div>
 			</div>
+			<div id="dataButtonWrapper">
+				<div></div>
+				<button class="dataButton" id="saveResultClip">Save result to clipboard</button>
+				<div style="flex: 0 0 10%"></div>
+				<button class="dataButton" id="saveResultTxt">Save result to text file</button>
+				<div style="flex: 0 0 10%"></div>
+				<textarea class="dataButton" placeholder="Cipher preset - type preset name" id="storePreset"></textarea>
+				<div></div>
+			</div>
+			<div id="showPreview"></div>
 		</div>
+
 		<div class="section">
 			<h1>Code Point Caesar Cipher Details</h1>
 			Like the Caesar Cipher, a cipher can be made to shift a set of characters in a direction. However, instead of using only the alphabet, this special cipher can use Unicode code points. By using the <code>ord()</code> and <code>chr()</code> of Python (or similar methods like JS's <code>charCodeAt()</code> or <code>fromCharCode()</code> functions), one can turn individual characters in a string into numbers and vice versa based on their code points according to <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">Unicode</a>.<br><br>
@@ -76,8 +101,9 @@
 			↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓<br>
 			66 67 68 69&nbsp;  70 71 72 73<br>
 			</code>
-			This translates to "BCDEFGHI". Like the original Caesar cipher, if your string does not contain the entire range of shifting characters, you are bound to gain or lose characters in your string that were not there before. "a"/"b"/"c"/"d"/"A" are no longer present, while we get the new characters "E"/"F"/"G"/"H"/"I". Our unique symbol count remains the same, while the symbols we use to represent any given letter do not.<br>
-			A very important detail! This cipher is not inherently decipherable if you lack the original range used to create the ciphered text. The range of new charcters is from 66-73, not 65-100. In other words, the range that could produce the ciphered text is a superset of the ciphered text's range, and thus the original range used is ambiguous and can map to MANY different possible ranges. Because of this, even though you only need the mathematical shift key in order to <span style="font-style: italic;">generate</span> the cipher, you will need the shift key <span style="font-weight: bold;">AND</span> the original range to decipher it. However, it is good practice to define a suitable range for BOTH operations, since defaulting the range for the initial encryption to be the highest/lowest points of any character in the string innately exposes more information about the original string.
+			This translates to "BCDEFGHI". Like the original Caesar cipher, if your string does not contain the entire range of shifting characters, you are bound to gain or lose characters in your string that were not there before. "a"/"b"/"c"/"d"/"A" are no longer present, while we get the new characters "E"/"F"/"G"/"H"/"I". Our unique symbol count remains the same, while the symbols we use to represent any given letter do not.<br><br>
+
+			A very important detail! This cipher is not inherently decipherable if you lack the original range used to create the ciphered text. The range of new charcters is from 66-73, not 65-100. In other words, the range that could produce the ciphered text is a superset of the ciphered text's range, and thus the original range used is ambiguous and can map to MANY different possible ranges. Because of this, even though you only need the mathematical shift key in order to <span style="font-style: italic;">generate</span> the cipher, you will need the shift key <span style="font-weight: bold;">AND</span> the original range to decipher it. However, it is good practice to define a suitable range for BOTH operations, since defaulting the range for the initial encryption to be the highest/lowest points of any character in the string innately exposes more information about the original string. As well as that, for the string to be decipherable, the range must encapsulate the range of the original character set.
 
 			<h3>Benefits and Drawbacks</h3>
 			This specific type of cipher, to our knowledge, is not widely available at a first-glance. This was simply a cipher created on a whim for this project. Thus, it is probably not a stock cipher you would find online in any place other than here. To crack it, it would require a more advanced knowledge of Unicode code points as well as general cryptography. It will absolutely go under the radar of text parsers, and very likely under the radar of current modern-day AI. Still, however, this cipher is subject to <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way, akin to the original Caesar cipher.<br><br>
@@ -95,6 +121,74 @@
 	<script src="init.js"></script>
 
 	<script>
+
+	setSaveCipher(async() => {
+
+		let lower = document.getElementById("rangeLower") ? parseInt(document.getElementById("rangeLower").value) : null;
+		let upper = document.getElementById("rangeUpper") ? parseInt(document.getElementById("rangeUpper").value) : null;
+
+		return fetch("/cipher_point", {
+			method: "POST",
+			body: JSON.stringify({
+				text: document.getElementById('cipherFrom').value,
+				key: parseInt(document.getElementById('key').value),
+				revert: document.getElementById('decipher').dataset.clicked === "1",
+				lower: lower,
+				upper: upper
+			})
+		}).then(res => {
+			if(res.status === 200)
+				return res.text();
+			else
+				throw new Error("Cipher failed.");
+		});
+	});
+
+	let changeRangePreview = function() {
+		let text = document.getElementById('cipherFrom').value;
+
+		let lower = 0x110000;
+		let upper = 0;
+
+		for(let char of text) {
+			lower = Math.min(lower, char.charCodeAt(0))
+			upper = Math.max(upper, char.charCodeAt(0))
+		}
+
+		rangeLowerPreview.textContent = lower;
+		rangeUpperPreview.textContent = upper;
+
+		document.getElementById('rangeLower').placeholder = lower;
+		document.getElementById('rangeUpper').placeholder = upper;
+	}
+
+	document.getElementById('cipherFrom').addEventListener('keydown', () => setTimeout(changeRangePreview,0))
+	document.getElementById('cipherFrom').addEventListener('change', changeRangePreview)
+	document.getElementById('cipherFrom').addEventListener('keyup', changeRangePreview)
+
+	if(urlDissect !== null && typeof urlDissect === "number") {
+		json = getAllLocalData();
+		preset = json[urlDissect];
+		document.getElementById('key').value = preset.key;
+		document.getElementById('rangeLower').value = preset.rangeLower;
+		document.getElementById('rangeUpper').value = preset.rangeUpper;
+	}
+
+	document.getElementById('storePreset').addEventListener('keydown', function(event) {
+		if(event.key !== "Enter") return;
+		event.preventDefault();
+		event.stopPropagation();
+		saveLocalData({
+			name: this.value,
+			type: "point",
+			key: document.getElementById('key').value,
+			rangeUpper: document.getElementById('rangeUpper').value,
+			rangeLower: document.getElementById('rangeLower').value
+		});
+		updateCipherList()
+		this.value = "";
+	});
+
 	</script>
 
 </body>

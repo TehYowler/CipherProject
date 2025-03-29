@@ -259,7 +259,89 @@ toggle.toggleClickedTrue {
 	height: 100px;
 }
 
-#key, #range, #alphabet {
+#key, #alphabet, #range {
 	width: calc(100% - 8px);
 	height: 1em;
+}
+
+#range > textarea {
+	height: 1em;
+	width: 50px;
+}
+
+#showPreview {
+	margin-top: 10px;
+}
+
+#dataButtonWrapper > * {
+	flex: 1 0 5%;
+}
+
+#dataButtonWrapper {
+	margin-top: 10px;
+	display: flex;
+}
+
+#rangeLowerPreview, #rangeUpperPreview {
+	display: inline-block;
+	background: var(--bgSoft);
+	border: 1px solid var(--main);
+	border-radius: 2px;
+	height: 1em;
+	width: 50px;
+	padding: 2px;
+}
+
+.gridRight {
+	grid-column: span 1 !important;
+	text-align: right;
+}
+
+.gridCenter {
+	grid-column: span 1 !important;
+	text-align: center;
+}
+
+#cipherList {
+	text-wrap: initial;
+}
+
+.cipherListEntry {
+	display: inline-block;
+	margin: 0px;
+	padding: 0px;
+	/* background: var(--bgSoft); */
+	border-radius: 4px;
+}
+
+.cipherListEntryButton {
+	display: inline-block;
+	margin: 0 5px;
+	padding: 5px;
+	border: 1px solid var(--main);
+	background: var(--bgSoft);
+	cursor: pointer;
+	border-radius: 4px;
+	vertical-align: middle;
+}
+
+.cipherListEntryButton.xButton {
+	width: 20px;
+	height: 20px;
+	line-height: 0;
+	text-wrap: nowrap;
+	border: none;
+	background: rgb(135,45,45);
+	margin: 0;
+	margin-left: 5px;
+}
+
+#storePreset {
+	height: 16px;
+	font: initial;
+	text-align: center;
+	font-size: 12px;
+	border: 1px solid rgb(205,105,0);
+	border-radius: 4px;
+	background: rgb(65,20,0);
 }

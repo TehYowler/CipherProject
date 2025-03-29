@@ -30,7 +30,8 @@
 		</div>
 		<div class="bar" id="underbar">
 			<div class="verticalCenter" class="max">
-				<h1>All Ciphers</h1>
+				<h1>All Presets</h1>
+				<div id="cipherList"></div>
 			</div>
 		</div>
 
@@ -50,7 +51,7 @@
 				<li>Access the main info page (here).</li>
 				<li>Access or use any specific cipher and its information.</li>
 			</ul>
-			By interacting with the bottom portion, you can access saved ciphers.<br><br>
+			By interacting with the bottom portion, you can access saved cipher presets.<br><br>
 
 			<!-- Available ciphers:
 			<ul>
@@ -229,10 +230,8 @@
 					</code>
 				</dt>
 				<dd>
-					By prefixing any previous notation with "bigraphic:" or "trigraphic:", we can get an automatically generated bigraphic or trigraphic cipher using all possible symbol combinations in a two-length or three-length block. This results in a symbol set that is either squared or cubed the size of the original symbol set.<br>
-					For the first key example, because the standard-alphabet set is 52 letters, we get an alphabet key of 2704 symbols since that is 52 squared.<br>
-					For the second key example, because the single-case alpha-numeric set is 36 letters, we get an alphabet key of 46656 symbols since that is 36 cubed.<br>
-					That means for either of those ciphers, you will need 2704 or 46656 unique cipher symbols respectively to have a complete cipher, which can be extremely difficult if you do not have the tools to gather and organize that many unique symbols.
+					By prefixing any previous notation with "bigraphic:" or "trigraphic:", we can get an automatically generated bigraphic or trigraphic cipher using all possible symbol combinations in a two-length or three-length block. This results in a symbol set that is either squared or cubed the size of the original symbol set respectively.<br>
+					For the first key example, because the standard-alphabet set is 52 letters, we get an alphabet key of 2704 symbols since that is 52 squared. That means for that cipher, you will need 2704 unique cipher symbols to have a complete cipher, which can be extremely difficult if you do not have the tools to gather and organize that many unique symbols.
 				</dd>
 			</dl>
 
@@ -286,7 +285,7 @@
 
 			<h3>Benefits and Drawbacks</h3>
 			Depending on who uses the cipher and how, it can be a very strong cipher. The keys for this cipher can vary very heavily, it has support for all Unicode symbols for both encoding and decoding, and it introduces concepts which can help thwart <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a>.<br><br>
-			A very interesting property of being able to use any Unicode character you desire in the cipher key is that you can intentionally utilize the <a href="#unusual-behavior">unusual behavior</a> of certain symbols when it comes to rendering text. Certain characters appear so small that it is very difficult to seperate them just by looking at them or by using your cursor to select them, and certain symbols have no width at all, making them invisible at a glance as if there were no symbols there in the first place. Common characters like spaces or vowels could be repalced with these anomolous characters to provide a disorienting first-glance at the ciphered text.
+			A very interesting property of being able to use any Unicode character you desire in the cipher key is that you can intentionally utilize the <a href="#unusual-behavior">unusual behavior</a> of certain symbols when it comes to rendering text. Certain characters appear so small that it is very difficult to seperate them just by looking at them or by using your cursor to select them, and certain symbols have no width at all, making them invisible at a glance as if there were no symbols there in the first place. Common characters like spaces or vowels could be replaced with these anomolous characters to provide a disorienting first-glance at the ciphered text.
 
 			<!-- <h2>Custom Equation Cipher</h2> -->
 		</div>
