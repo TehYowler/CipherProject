@@ -139,13 +139,13 @@
 	document.getElementById('storePreset').addEventListener('keydown', function(event) {
 		if(event.key !== "Enter") return;
 		event.preventDefault();
-		event.stopPropagation();
 		saveLocalData({
 			name: this.value,
 			type: "place",
 			key: document.getElementById('key').value
 		});
-		updateCipherList()
+		this.placeholder = "Saved preset!";
+		updateCipherList();
 		this.value = "";
 	});
 

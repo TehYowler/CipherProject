@@ -177,7 +177,6 @@
 	document.getElementById('storePreset').addEventListener('keydown', function(event) {
 		if(event.key !== "Enter") return;
 		event.preventDefault();
-		event.stopPropagation();
 		saveLocalData({
 			name: this.value,
 			type: "point",
@@ -185,7 +184,8 @@
 			rangeUpper: document.getElementById('rangeUpper').value,
 			rangeLower: document.getElementById('rangeLower').value
 		});
-		updateCipherList()
+		this.placeholder = "Saved preset!";
+		updateCipherList();
 		this.value = "";
 	});
 
