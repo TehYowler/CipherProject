@@ -14,32 +14,41 @@ import re
 #RNG for homophony in the Symbol Map Cipher.
 import random;
 
-def unique(inputArray: Iterable):
+#Gets the unique values in an iterable and returns a list of those elements, while retaining order.
+def unique(inputArray: Iterable) -> list:
 	seen = set()
 	uniqueArr = [element for element in inputArray if element not in seen and (seen.add(element) or True)];
 	return uniqueArr;
 	#Credits to "https://www.geeksforgeeks.org/python-get-unique-values-list#using-list-comprehension" for the solution to get unique elements in order.
 
-#Codeword operations for the Symbol Map Cipher.
-def lowered(inputArray: Iterable):
+# -- Codeword operations for the Symbol Map Cipher. --
+
+#"Lowered" lowercases an iterable and returns unique elements (e.g. a list that contains the whole
+#alphabet uppercase and lowercase would have two letter duplicates since every letter would be lowercase..
+#That is not desirable behavior.)
+def lowered(inputArray: Iterable[str])-> list:
 	seen = set()
 	lowerCase = [char.lower() for char in inputArray if char.lower() not in seen and (seen.add(char.lower()) or True)];
 	return lowerCase;
 	#Credits to "https://www.geeksforgeeks.org/python-get-unique-values-list#using-list-comprehension" for the solution to get unique elements in order.
 
-def uppered(inputArray: Iterable):
+#"Uppered" does the same but for uppercase letters/
+def uppered(inputArray: Iterable[str])-> list:
 	seen = set()
 	upperCase = [char.upper() for char in inputArray if char.upper() not in seen and (seen.add(char.upper()) or True)];
 	return upperCase;
 	#Credits to "https://www.geeksforgeeks.org/python-get-unique-values-list#using-list-comprehension" for the solution to get unique elements in order.
 
-def bigraphic(inputArray: Iterable) -> list:
+#Creates a list with from the iterable "inputArray" that returns all possible combinations of the given glyphs stacked to a length of two.
+#Ideally this should be used with singular characters, but the function will not raise an error if that occurs in the case it is intentional.
+def bigraphic(inputArray: Iterable[str]) -> list:
 	poly = []
 	for letter1 in inputArray:
 		for letter2 in inputArray:
 			poly.append(letter1 + letter2)
 	return poly
 
+#Same as bigraphic, but for three characters.
 def trigraphic(inputArray: Iterable) -> list:
 	poly = []
 	for letter1 in inputArray:
@@ -48,15 +57,19 @@ def trigraphic(inputArray: Iterable) -> list:
 				poly.append(letter1 + letter2 + letter3)
 	return poly
 
-def escapeFully(string) -> list[str]:
+# -- Preset character set lists. --
+
+#Escapes backslashes, pipe symbols, and commas with a backspace.
+#This is for the program's syntax in case a character with special meaning must be interpetted literally.
+def escapeFully(string: Iterable[str]) -> list[str]:
 	return [re.sub(r"\\|\||,", lambda a: "\\" + a.group(0), char) for char in string]
 
-alphabet = [chr(num) for num in [*range(65,91), *range(97,123)]]
+#Defines alphabet-standard, alpha-numeric, and full-set variables based on certain ASCII ranges.
+alphabet = [chr(num) for num in [*range(65,91), *range(97,123)]];
+alphaNumeric = [chr(num) for num in [*range(48,58),*range(65,91), *range(97,123)]];
+fullSet = [chr(num) for num in range(32,127)]; fullSet.append('\n');
 
-alphaNumeric = [chr(num) for num in [*range(48,58),*range(65,91), *range(97,123)]]
-
-fullSet = [chr(num) for num in range(32,127)]
-fullSet.append('\n');
+# -- Algebraic cipher settup. --
 
 #A custom exception for handling if a value is a single chracter or not.
 class CharError(ValueError):
@@ -100,25 +113,26 @@ class AlgebraicCipher:
 	SUCCESS = "This cipher worked!";
 	UNKNOWN_ERROR = "An unknown error has occured, please try again.";
 
+	#Interprets a string as an expression for the cipher equation, or ensures that the given input IS an expression.
 	@staticmethod
 	def asEquation(equation: str|Expr) -> Expr:
 		if(type(equation) == str):
 			return sympy.S(equation);
-		if(isinstance(equation,(Expr))):
+		if(isinstance(equation,Expr)):
 			return equation;
 		else:
 			raise EquationError(AlgebraicCipher.IS_EQUATION_ERROR);
 
+	#Check a value to see if it is a chracter (length-1 string).
 	@staticmethod
 	def charCheck(check: Any) -> None:
-		#Check a value to see if it is a chracter (length-1 string).
 		if(type(check) != str):
 			#If it is not a string, return a StringError.
-			raise StringError(f"'{(check)}' instead of a string passed into AlgebraicCipher.encrypt.");
+			raise StringError(f"'{(check)}' instead of a string passed into AlgebraicCipher.");
 
 		if(len(check) != 1):
 			#If it is not a char, return CharError.
-			raise CharError(f"String of length {len(check)} instead of 1 passed into AlgebraicCipher.decrypt.");
+			raise CharError(f"String of length {len(check)} instead of 1 passed into AlgebraicCipher.");
 
 		#Otherwise, nothing happens and code exeuction operates as normal.
 
@@ -149,11 +163,11 @@ class AlgebraicCipher:
 	@staticmethod
 	def encryptAll(equation: str|Expr,chars: str|Iterable[str]) -> str:
 		eq = AlgebraicCipher.asEquation(equation);
-		newString = ""; #Gets an empty string to append to.
+		newString = []; #Gets an empty list to append to.
 		for char in chars:
 			#Adds each encrypted character.
-			newString += AlgebraicCipher.encrypt(eq,char);
-		return newString; #Returns the bundled sequence as a string.
+			newString.append(AlgebraicCipher.encrypt(eq,char));
+		return "".join(newString); #Returns the bundled sequence as a string.
 
 	#THe following decrypt methods practically act the same as the encrypt methods, except performing the reverse and swapping x for i.
 	@staticmethod
@@ -175,10 +189,10 @@ class AlgebraicCipher:
 	@staticmethod
 	def decryptAll(equation: str|Expr,chars: str|Iterable[str]) -> str:
 		eq = AlgebraicCipher.asEquation(equation);
-		newString = "";
+		newString = [];
 		for char in chars:
-			newString += AlgebraicCipher.decrypt(eq,char);
-		return newString;
+			newString.append(AlgebraicCipher.decrypt(eq,char));
+		return "".join(newString);
 
 	#Checks if encryption is possible, and returns a result if it is.
 	@staticmethod
@@ -206,7 +220,6 @@ class AlgebraicCipher:
 		except Exception:
 			return AlgebraicCipher.UNKNOWN_ERROR;
 
-
 	#Same as encryptPossible, except for decryption.
 	@staticmethod
 	def decryptPossible(equation: str|Expr, chars: str|Iterable[str] = allASCII) -> str:
@@ -230,6 +243,9 @@ class AlgebraicCipher:
 		except Exception:
 			return AlgebraicCipher.UNKNOWN_ERROR;
 
+# -- Caesar-like ciphers. --
+
+#Performa a traditional caesar cipher.
 def caesarCipher(string: str,key: int):
 	key %= 26;
 	if(key == 0): #If there is no shift, then just return the original string.
@@ -256,6 +272,10 @@ def caesarCipher(string: str,key: int):
 			returnString += char
 	return returnString
 
+#Performs a code point cipher.
+#The string is interpretted as a list of unicode points (in decimal) using the ord() function.
+#Then, the code points are shifted based on the integer shift given to the function, with positive being right and negative being left.
+#The code points are wrapped around the range of "lower" and "upper", or the lowest/highest ord value respectively if lower or upper are not defined.
 def codePointCaesarCipher(string: str,shift: int, lower:int|None=None ,upper:int|None=None ):
 
 	if(shift == 0): #If there is no shift, jsut return the same string.
@@ -283,6 +303,10 @@ def codePointCaesarCipher(string: str,shift: int, lower:int|None=None ,upper:int
 
 	return returnString;
 
+#Performs an in-place cipher.
+#First, each unique ord() value is obtaiend and sorted.
+#Then, that array is shifted based off of the "shift" value.
+#Each character is then mapped from the old unsorted ord() map to the new shifted ord() map.
 def inPlaceCaesarCipher(string: str,shift: int):
 
 	if(shift == 0): #If there is no shift, jsut return the same string.
@@ -293,6 +317,9 @@ def inPlaceCaesarCipher(string: str,shift: int):
 	orderArray.sort();
 
 	shift %= len(orderArray);
+
+	if(shift == 0): #If there is no shift after the length evaluation, jsut return the same string.
+		return string;
 
 	postOrderArray = copy(orderArray);
 	for times in range(shift):
@@ -308,7 +335,9 @@ def inPlaceCaesarCipher(string: str,shift: int):
 
 	return returnString;
 
-#The Symbol Map Cipher functions.
+# -- The Symbol Map Cipher functions. --
+
+#Interprets Symbol Map Cipher keys, parsing out operations or presets like "alphabet-standard", "case" or "bigraphic".
 def escapeCustomKey1(string) -> list[str]:
 
 	case = 0;
@@ -402,6 +431,7 @@ def escapeCustomKey1(string) -> list[str]:
 	else:
 		return []
 
+
 def escapeCustomKey2(string) -> list[str]:
 
 	escaperMain = [];
@@ -492,11 +522,7 @@ def symbolMapCipher(keyAlphabet: str, keyCipher: str, text: str, decipher: bool 
 	#With doing this we will operate by length before performing any replacements.
 	lengths = unique([len(string) for string in choiceConversion.keys()]);
 
-	# for alphabet, cipher in sort.items():
-	# 	replacing = "|".join(re.escape(escaped) for escaped in escapeCustomKey2(alphabet));
-	# 	choices = escapeCustomKey2(cipher);
-	# 	text = re.sub(replacing,lambda match: random.choice(choices),text);
-
+	#Then, start parsing and replacing the text with found matches, starting with the longest and going to the shortest.
 	for length in lengths:
 		offset = 0;
 		while(offset + length < len(text) + 1):
@@ -504,28 +530,16 @@ def symbolMapCipher(keyAlphabet: str, keyCipher: str, text: str, decipher: bool 
 			for alphabet, cipher in choiceConversion.items():
 				if(len(alphabet) != length):
 					continue;
-				if(snippet == alphabet):
-					text = text[0:offset] + cipher + text[offset + length:];
-					offset += len(cipher) - 1;
+				if(snippet == alphabet): #If a snippet is found, replace it.
+					choice = random.choice(escapeCustomKey2(cipher)); #If homophony is used, get a random symbol of the given symbols for replacement.
+					#Then, replace the text with the corresponding replacement choice.
+					text = text[0:offset] + choice + text[offset + length:];
+					#Then update the offset appropriately to not repeat a search on parts of the string that have already been replaced for this length.
+					offset += len(choice) - 1;
 					break;
-			offset += 1;
+			offset += 1; #And update the offset by 1 regardless of replacement status to keep moving forward in the string.
 
-
-		# replacing = "|".join(re.escape(escaped) for escaped in escapeCustomKey2(alphabet));
-		# choices = escapeCustomKey2(cipher);
-		# text = re.sub(replacing,lambda match: random.choice(choices),text);
-
-	return text;
-
-# a = symbolMapCipher(r"1234567890!@#$%^&*()-=_+[]",r"a|A,b|B,c|C,d|D,e|E,f|F,g|G,h|H,i|I,j|J,k|K,l|L,m|M,n|N,o|O,p|P,q|Q,r|R,s|S,t|T,u|U,v|V,w|W,x|X,y|Y,z|Z","12345 "*10)
-
-# b = symbolMapCipher(r"1234567890!@#$%^&*()-=_+[]",r"a|A,b|B,c|C,d|D,e|E,f|F,g|G,h|H,i|I,j|J,k|K,l|L,m|M,n|N,o|O,p|P,q|Q,r|R,s|S,t|T,u|U,v|V,w|W,x|X,y|Y,z|Z",a,True)
-
-# a = symbolMapCipher(r"alphabet-standard", r"Ⱉⴈ⥧⡄ⶽ⧶⤈⓻⒞◘〉₂⥴⥆┹⡲ℌ⛬⍉Ⱎ⡿▘⳩⁴⫢□⹖⸌⤢⤀⩻⒩⽢⽟ⲇ⧮⪞⟸⼢⮣⢆⮆⣭▯⧠╠☻⼒⌑⾌⣃ⷒ", encrypting);
-
-# b = symbolMapCipher(r"alphabet-standard", r"Ⱉⴈ⥧⡄ⶽ⧶⤈⓻⒞◘〉₂⥴⥆┹⡲ℌ⛬⍉Ⱎ⡿▘⳩⁴⫢□⹖⸌⤢⤀⩻⒩⽢⽟ⲇ⧮⪞⟸⼢⮣⢆⮆⣭▯⧠╠☻⼒⌑⾌⣃ⷒ", a, True);
-
-
+	return text; #Then after all of that, replace the final Symbol Map Cipher text.
 
 if(__name__ == "__main__"): #Demo if the file is run directly.
 
