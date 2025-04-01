@@ -69,9 +69,17 @@ body {
 #mainPage > .section {
 	border: 2px solid var(--main);
 	background: var(--bgFocus);
-	border-radius: 10px;
+	border-radius: 0;
 	padding: 10px;
 	margin-bottom: 10px;
+}
+
+#mainPage > .section:last-child {
+	border-radius: 0 0 10px 10px;
+}
+
+#mainPage > .section:first-child {
+	border-radius: 10px 10px 0 0;
 }
 
 #mainPage > .section h1 {
