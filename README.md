@@ -1,8 +1,8 @@
 This is a college project that ciphers text using Python's "ord" and "chr" functions and makes that functionality available in an easy to use interface.
 
 # Breakdown
-"cipher.py" holds all of the priamry ciphering functions used.
-"server.py" starts a local web server to display HTML visuals in something like a browser.
+"cipher.py" holds all of the primary ciphering functions used.
+"server.py" starts a local web server to display HTML visuals in a browser.
 The public folder holds all files indiscriminately served by the server, which includes all HTML, CSS, and JS files/code.
 
 # Instructions
