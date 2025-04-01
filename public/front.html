@@ -92,6 +92,14 @@
 				<li>(extra functionality).</li>
 			</ol>
 
+			Using code points and equations, the code points of each character in a string can be modified by mapping their values via an equation. For example, the string "abcd" maps to "97 98 99 100". If we use the key "x*2", we get:<br>
+			<code>
+			97&nbsp; 98&nbsp; 99&nbsp; 100<br>
+			↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;↓<br>
+			194 196 198 200<br>
+			</code>
+			This translates to "ÂÄÆÈ", the result of doubling the character code points.<br><br>
+
 			<h3>Benefits and Drawbacks</h3>
 			The upsides of this technique is that it is not nearly as easily reversable as a Caesar cipher, and the key can vary VERY heavily depending on the mathematical proficiency one has to write equations that satisfy the rules above. A text parser will not be able to get any information out of it, and depending on what chatbot sees it, an AI likely will not be capable of reversing the string. However, it can be very clunky for a person who wants a quick-and-done encyption to come up with a unique equation each time they want to generate a unique key, and it is very likely a person will simply resort to using a simple linear equation each time, which can be made for more predictable keys. Also, while this can technically support all Unicode symbols from any different language, when the code points of characters that go into certain boundaries, it can be difficult to keep code points within the range of 0-1114111. Also, because each conversion is 1-1, this cipher is subject to <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way like the Caesar cipher.<br>
 			<span style="color: yellow">Additionally, because the equations can spit out arbitrary Unicode characters from the equation used, the resulting symbols are subject to the aforementioned <a href="#unusual-behavior">unusual behavior</a></span>.
