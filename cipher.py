@@ -5,7 +5,7 @@ from copy import copy;
 
 #Sympy - A Python module for mathematical computation.
 from sympy import Expr, Integer, symbols;
-from sympy.abc import i, x
+from sympy.abc import v, x
 import sympy;
 
 #Regular expressions for cipher symbol replacement in the Symbol Map Cipher.
@@ -174,10 +174,10 @@ class AlgebraicCipher:
 	def decrypt(equation: str|Expr,char) -> str:
 		AlgebraicCipher.charCheck(char);
 		eq = AlgebraicCipher.asEquation(equation);
-		inverse = sympy.S(sympy.solve(eq - i, x))[0];
+		inverse = sympy.S(sympy.solve(eq - v, x))[0];
 		ordinal = ord(char);
 
-		ordinal = inverse.subs({i: ordinal });
+		ordinal = inverse.subs({v: ordinal });
 
 		if isinstance(ordinal, Integer):
 			ordinal = int(ordinal);
