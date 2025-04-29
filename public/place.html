@@ -14,45 +14,30 @@
 </head>
 <body>
 
-	<div id="sidebarWrapper">
-
-		<div class="bar" id="padder"></div>
-		<div class="bar" id="sidebar">
-			<div id="sidebarInner" class="bar max">
-				<button id="pressCipher"    >Main<br>Page</button>
-				<button id="pressCaesar"    >Caesar</button>
-				<button id="pressAlgebraic" >Algebraic</button>
-				<button id="pressPoint"     >Point</button>
-				<button id="pressPlace"     >Place</button>
-				<button id="pressSymbol"    >Symbol</button>
-				<div id="fill"></div>
-			</div>
-		</div>
-		<div class="bar" id="underbar">
-			<div class="verticalCenter" class="max">
-				<h1>All Presets</h1>
-				<div id="cipherList"></div>
-			</div>
-		</div>
-
-	</div>
-
 	<div id="title">
-		<span id="textLeft">
-			In-Place Caesar Cipher
-		</span>
+		<div id="titleInner">
+			<div id="textLeft">
+				In-Place Caesar Cipher
+			</div>
+			<vr style="height: 40px;"></vr>
+			<div id="titleButtonHolder"></div>
+		</div>
+		<h1>Presets</h1>
+		<div id="presetList"></div>
 	</div>
 
 	<div id="mainPage">
 		<div class="section">
 			<h1>How-To</h1>
+			To use this cipher:
 			<ul>
 				<li>Input the string you want to encrypt or decrypt.</li>
 				<li>Input the key as a number. Positives shift right, negatives shift left.</li>
 				<li>If you are decrypting, use the key used to originally encrypt the string and press the "decipher" button.</li>
 			</ul>
-			By saving a preset of this cipher, the browser's local data is updated to store the in-place caesar offset key.
+			Refer to the <a href="#examples">examples</a> section for some examples of using the cipher, and go to <a href="#details">details</a> section for the details of this cipher.<br><br>
 
+			To create a preset for a cipher, look for the orange box to the bottom right of the cipher input section, type in the preset name, and type enter. A preset for that cipher will be created.
 		</div>
 
 		<div class="section">
@@ -63,8 +48,8 @@
 				<input type="file" accept="text/*" id="importText" style="display: none;"/>
 				<button id="importTextRepresent" class="dataButton">Input string from text file</button></div> <textarea id="cipherFrom"></textarea>
 				<div style="grid-column: span 1">The cipher key number.</div> <textarea id="key"></textarea>
-				<div style="grid-column: span 1">Decipher using the key.</div> <div style="grid-column: span 1"><toggle id="decipher"></toggle></div>
-				<div style="grid-column: span 1">Preview the result.</div> <div style="grid-column: span 1"><toggle data-clicked="1" id="preview"></toggle></div>
+				<div style="grid-column: span 1">Decipher using the key.</div> <div style="grid-column: span 1"><toggle class="cipher" id="decipher"></toggle></div>
+				<div style="grid-column: span 1">Preview the result.</div> <div style="grid-column: span 1"><toggle class="cipher" data-clicked="1" id="preview"></toggle></div>
 			</div>
 			<div id="dataButtonWrapper">
 				<div></div>
@@ -72,36 +57,97 @@
 				<div style="flex: 0 0 10%"></div>
 				<button class="dataButton" id="saveResultTxt">Save result to text file</button>
 				<div style="flex: 0 0 10%"></div>
-				<textarea class="dataButton" placeholder="Cipher preset - type preset name" id="storePreset"></textarea>
+				<textarea class="dataButton" placeholder="Type preset name, then press enter" id="storePreset"></textarea>
 				<div></div>
 			</div>
 			<div id="showPreview"></div>
 		</div>
-		<div class="section">
+
+		<div class="section" id="examples">
+			<h1>Examples</h1>
+
+			<div class="exampleWrapper">
+
+				<div class="exampleSingle">
+					<h2>Example 1</h2>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						1
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						This is a cat, mate.
+					</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> .ehmthmtTtaTs tiTsc,
+					<button class="exampleButton" data-key="1" data-input="This is a cat, mate."></button><hr>
+					Refer to the <a href="#details">details</a> section for a more advanced understanding of the cipher.
+				</div>
+
+				<div class="exampleSingle">
+					<h2>Example 2</h2>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						4
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						This is a cat, mate.
+					</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> tTaeiaei i, hmic h.s
+					<button class="exampleButton" data-key="4" data-input="This is a cat, mate."></button>
+				</div>
+
+				<div class="exampleSingle">
+					<h2>Example 3</h2>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						-3
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						James is in the truck.
+					</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> ehsk an anta.mka.uJirc
+					<button class="exampleButton" data-key="-3" data-input="James is in the truck."></button>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="section" id="details">
 			<h1>In-Place Cipher Details</h1>
 
-			<h2>In-Place Caesar Cipher</h2>
+			Like the Caesar Cipher, a cipher can be made to shift a set of characters in a direction. However, two special things are done here: all characters are shifted in-place (no special symbols are added or removed), and characters are treated based on their Unicode code point value. By using the <code>ord()</code> and <code>chr()</code> of Python (or similar methods like JS's <code>charCodeAt()</code> or <code>fromCharCode()</code> functions), one can turn individual characters in a string into numbers and vice versa based on their code points according to <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">Unicode</a>. If you want to convert these on the fly, use <a href="https://cryptii.com/pipes/decimal-text">this website</a> to convert to and from the numeric representations of text.<br><br>
 
-			Like the Caesar Cipher, a cipher can be made to shift a set of characters in a direction. However, two special things are done here: all characters are shifted in-place (no special symbols are added or removed), and characters are treated based on their Unicode code point value. By using the <code>ord()</code> and <code>chr()</code> of Python (or similar methods like JS's <code>charCodeAt()</code> or <code>fromCharCode()</code> functions), one can turn individual characters in a string into numbers and vice versa based on their code points according to <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">Unicode</a>.
+			With this cipher, we order the code points of every character in the string in ascending order, and then we shift each code point to the right or left. For example, "acdAAABCDDD" maps to "97 99 100 65 65 65 66 67 68 68 68".<br> Sorted in ascending order without duplicates, we get "65 66 67 68 97 99 100".<br>
+			Shifting over left one gives "66 67 68 97 99 100 65". The elements of the unshifted array are mapped to the new one, so we get this:<br>
 
-			With this cipher, we order the code points of every character in the string in ascending order, and then we shift each code point to the right or left.<br>
-			For example, "acdAAABCDDD" maps to "97 99 100 65 65 65 66 67 68 68 68". Sorted in ascending order, we get "65 66 67 68 97 99 100". Shifting over left one gives "66 67 68 97 99 100 65". Thus, 65 maps to 66, 66 maps to 67, 68 maps to 97, etc.<br>
-			<code>
-			97 99&nbsp; 100 65 65 65 66 67 68 68 68<br>
-			↓&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓<br>
-			99 100 65&nbsp; 66 66 66 67 68 97 97 97<br>
-			</code>
+<pre>
+65 66 67 68 97 99  100
+↓  ↓  ↓  ↓  ↓  ↓   ↓
+66 67 68 97 99 100 65
+</pre>
 
-			This new code matches to cdABBBCDaaa, which is made up of all of the same letters from the previous string without adding any additional letters, unlike the Code Point Cipher where new letters could appear and old ones could vanish.
+			If we interpret the numbers as their letter equivalents, we get a much more understandable mapping:
 
-			<h3>Benefits and Drawbacks</h3>
+<pre>
+A  B  C  D  a  c  d
+↓  ↓  ↓  ↓  ↓  ↓  ↓
+B  C  D  a  c  d  A
+</pre>
+
+			So when we put acdAAABCDDD through the cipher, we obtain:
+
+<pre>
+a  c  d  A  A  A  B  C  D  D  D
+↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓
+c  d  A  B  B  B  C  D  a  a  a
+</pre>
+
+			Which is cdABBBCDaaa, which is made up of all of the same letters from the previous string without adding any additional letters, unlike the Code Point Cipher where new letters could appear and old ones could vanish.
+
+			<h2>Benefits and Drawbacks</h2>
 
 			This specific type of cipher, to our knowledge, is not widely available at a first-glance. This was simply a cipher created on a whim for this project. Thus, it is probably not a stock cipher you would find online in any place other than here. To crack it, it would require a more advanced knowledge of Unicode code points as well as general cryptography. It will absolutely go under the radar of text parsers, and very likely under the radar of current modern-day AI. Still, however, this cipher is subject to <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way, akin to the original Caesar cipher.<br><br>
 
-			HOWEVER, unlike the original Caesar cipher, this cipher is not restricted to the Latin alphabet only. All symbols for languages that Unicode has support for can be used, so coding messages in different languages can help mess up frequency analysis, as different analysis techniques will have to be used for different languages. Distribution analysis for a language such as written Chinese would be extremely hard to pull off compared to English, as the number of symbols used in the language for normal day-to-day conversation ranges in the thousands. This completely blows English out of the water, having the most-used symbols be only 52 lowercase+uppercase letters, with 10 numeric symbols, a space symbol, a comma and period, and newlines. However, since numbers/spaces/punctuation/newlines are MUCH less common than normal letters, and because uppercase is much less common than lowercase without special text methods, the English language crumbles hard from Frequency Analysis due to its lack of numerous evenly-distributed symbols. Innate and unambiguous multi-language support is an EXTREME upside over the traditional Caesar cipher in the hands of the right person.<br>
+			HOWEVER, unlike the original Caesar cipher, this cipher is not restricted to the Latin alphabet only. All symbols for languages that Unicode has support for can be used, so coding messages in different languages can help mess up frequency analysis, as different analysis techniques will have to be used for different languages. Distribution analysis for a language such as written Chinese would be extremely hard to pull off compared to English, as the number of symbols used in the language for normal day-to-day conversation ranges in the thousands. This completely blows English out of the water, having the most-used symbols be only 52 lowercase+uppercase letters, with 10 numeric symbols, a space symbol, a comma and period, and newlines. However, since numbers/spaces/punctuation/newlines are MUCH less common than normal letters, and because uppercase is much less common than lowercase without special text methods, the English language crumbles hard from Frequency Analysis due to its lack of numerous evenly-distributed symbols. Innate and unambiguous multi-language support is an EXTREME upside over the traditional Caesar cipher in the hands of the right person.<br><br>
 
-			<span style="color:rgb(0,255,0)">Note that because all characters are in-place and do not use extra arbitrary symbols that reside outside of the original string, the resulting symbols are not subject to <a href="#unusual-behavior">unusual behavior</a>.</span> The only common odd-case that should occur would be if newlines get shuffled into a common character, or if your method of storing strings snips consecutive spaces in strings were spaces get shuffled to repeat.<br>
-			<span style="color:orange">One major weakness this cipher has compared to the something like the Code Point Caesar Cipher is that the ciphered text is made enitrely out of the symbols in the original text due to being completely in-place. This means that while the use of arbitrary symbols that may cause unusual behavior will not occur, the general form of the original string can still be inferred DIRECTLY from the ciphered text like the language. This is a major aspect of weakness for the cipher.</span>
+			The only common odd case with unusual symbols that should occur would be if newlines get shuffled into a common character, or if your method of storing strings snips consecutive spaces in strings were spaces get shuffled to repeat.<br>
+			<span style="color:orange">One major weakness this cipher has compared to the something like the Code Point Caesar Cipher is that the ciphered text is made enitrely out of the symbols in the original text due to being completely in-place. This means that while the use of arbitrary symbols that may cause unusual formatting/behavior will not occur, the general form of the original string can still be inferred DIRECTLY from the ciphered text like the language. This is a major aspect of weakness for the cipher.</span>
 
 			<!-- <h2>Custom Equation Cipher</h2> -->
 		</div>
@@ -148,6 +194,25 @@
 		updateCipherList();
 		this.value = "";
 	});
+
+	let loadExampleButtons = document.querySelectorAll(".exampleButton");
+	for(let button of loadExampleButtons) {
+		if(!Object.hasOwn(button.dataset, "nodefault"))
+			button.textContent = "Load example into cipher";
+
+		button.addEventListener('click',function(e) {
+			document.getElementById('key').value = this.dataset.key;
+			document.getElementById('cipherFrom').value = this.dataset.input;
+
+			document.querySelector('div.section #cipherFrom').dispatchEvent(new Event("keydown"));
+			document.getElementById('cipherInput').scrollIntoView();
+			window.scrollBy({
+				top: -170,
+				left: 0,
+				behavior: "smooth",
+			});
+		})
+	}
 
 	</script>
 

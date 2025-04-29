@@ -14,46 +14,31 @@
 </head>
 <body>
 
-	<div id="sidebarWrapper">
-
-		<div class="bar" id="padder"></div>
-		<div class="bar" id="sidebar">
-			<div id="sidebarInner" class="bar max">
-				<button id="pressCipher"    >Main<br>Page</button>
-				<button id="pressCaesar"    >Caesar</button>
-				<button id="pressAlgebraic" >Algebraic</button>
-				<button id="pressPoint"     >Point</button>
-				<button id="pressPlace"     >Place</button>
-				<button id="pressSymbol"    >Symbol</button>
-				<div id="fill"></div>
-			</div>
-		</div>
-		<div class="bar" id="underbar">
-			<div class="verticalCenter" class="max">
-				<h1>All Presets</h1>
-				<div id="cipherList"></div>
-			</div>
-		</div>
-
-	</div>
-
 	<div id="title">
-		<span id="textLeft">
-			Symbol Map Cipher
-		</span>
+		<div id="titleInner">
+			<div id="textLeft">
+				Symbol Map Cipher
+			</div>
+			<vr style="height: 40px;"></vr>
+			<div id="titleButtonHolder"></div>
+		</div>
+		<h1>Presets</h1>
+		<div id="presetList"></div>
 	</div>
 
 	<div id="mainPage">
 		<div class="section">
 			<h1>How-To</h1>
+			To use this cipher:
 			<ul>
 				<li>Input the string you want to encrypt or decrypt.</li>
 				<li>Input the cipher key as a list of symbols to convert to.</li>
 				<li>Input the alphabet key as a list of symbols to convert from.</li>
 				<li>If you are decrypting, use the key used to originally encrypt the string and press the "decipher" button.</li>
 			</ul>
-			Refer to the details below for the full syntax of this cipher.<br>
-			By saving a preset of this cipher, the browser's local data is updated to store the cipher and alphabet keys.
+			Refer to the <a href="#examples">examples</a> section for some examples of using the cipher, and go to <a href="#details">details</a> section for the full syntax and details of this cipher.<br><br>
+
+			To create a preset for a cipher, look for the orange box to the bottom right of the cipher input section, type in the preset name, and type enter. A preset for that cipher will be created.
 
 		</div>
 
@@ -76,8 +61,8 @@
 				<button id="keyExport">Export Key to Text File</button><br>
 				<div id="keyLength"></div></div> <textarea style="grid-column: span 1" id="key"></textarea>
 
-				<div class="gridCenter">Decipher using the key.</div> <div style="grid-column: span 1"><toggle id="decipher"></toggle></div>
-				<div class="gridCenter">Preview the result.</div> <div style="grid-column: span 1"><toggle data-clicked="1" id="preview"></toggle></div>
+				<div class="gridCenter">Decipher using the key.</div> <div style="grid-column: span 1"><toggle class="cipher" id="decipher"></toggle></div>
+				<div class="gridCenter">Preview the result.</div> <div style="grid-column: span 1"><toggle class="cipher" data-clicked="1" id="preview"></toggle></div>
 			</div>
 
 			<div id="dataButtonWrapper">
@@ -86,17 +71,127 @@
 				<div style="flex: 0 0 10%"></div>
 				<button class="dataButton" id="saveResultTxt">Save result to text file</button>
 				<div style="flex: 0 0 10%"></div>
-				<textarea class="dataButton" placeholder="Cipher preset - type preset name" id="storePreset"></textarea>
+				<textarea class="dataButton" placeholder="Type preset name, then press enter" id="storePreset"></textarea>
 				<div></div>
 			</div>
 			<div id="showPreview"></div>
 		</div>
-		<div class="section">
+
+		<div class="section" id="examples">
+			<h1>Examples</h1>
+
+			<div class="exampleWrapper">
+
+				<div class="exampleSingle">
+					<h2>Simple</h2>
+					<span class="exampleSeperator">Alphabet</span> <vr class="single"></vr> <code class="block">
+						elco
+					</code><br>
+					<span class="exampleSeperator">Cipher</span> <vr class="single"></vr> <code class="block">
+						1234
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						welcome, cole
+					</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> w1234m1, 3421
+					<button class="exampleButton" data-alphabet="elco" data-cipher="1234" data-input="welcome, cole"></button><hr>
+					Text from the alphabet key is converted into the cipher key. In this example:<br>
+					<ul>
+						<li>"e" becomes "1".<br></li>
+						<li>"l" becomes "2".<br></li>
+						<li>"c" becomes "3".<br></li>
+						<li>"o" becomes "4".</li>
+					</ul>
+					The first letter of the alphabet key gets converted into the first letter of the cipher key, and the process repeats for the second and third (and so-forth) keys.<br>
+				</div>
+
+				<div class="exampleSingle">
+					<h2>Custom Polygraphic</h2>
+					<span class="exampleSeperator">Alphabet</span> <vr class="single"></vr> <code class="block">
+					ge,or,o
+					</code><br>
+					<span class="exampleSeperator">Cipher</span> <vr class="single"></vr> <code class="block">
+						10,2,3
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						get george or get lost!
+					</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> 10t 10210 2 10t l3st!
+					<button class="exampleButton" data-alphabet="ge,or,o" data-cipher="10,2,3" data-input="get george or get lost!"></button><hr>
+
+					Text in either the cipher key or alphabet key can be separated by commas to cipher entire blocks of text.
+					<ul>
+						<li>Instances of "ge" become "10".<br></li>
+						<li>Instances of "or" become "2".<br></li>
+						<li>Instances of "o" become "3".<br></li>
+					</ul>
+					Longer blocks of text are prioritized before smaller blocks of text. Thus, "or" is always converted before "o".<br><br>
+					This technique is most useful for mitigating the issue of frequency analysis, since blocks of text are more difficult to analyze the frequency of than single units of text, making the cipher more powerful.<br>
+				</div>
+
+				<div class="exampleSingle">
+					<h2>Auto Polygraphic</h2>
+					<span class="exampleSeperator">Alphabet</span> <vr class="single"></vr> <code class="block">
+						bigraphic:abc
+					</code><br>
+					<span class="exampleSeperator">Cipher</span> <vr class="single"></vr> <code class="block">
+						1,2,3,4,5,6,7,8,9
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						aa ab ac ca ab cc
+					</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> 1 2 3 7 2 9
+					<button class="exampleButton" data-alphabet="bigraphic:abc" data-cipher="1,2,3,4,5,6,7,8,9" data-input="aa ab ac ca ab cc"></button><hr>
+
+					The "bigraphic:" operator in a key produces every possible 2-letter combination of the text that comes after it. In this instance, the alphabet key creates "aa,ab,ac,ba,bb,bc,ca,cb,cc".<br><br>
+
+					However, this means that the bigraphic operator produces a squared amount of symbols from the original text. In this case, "abc" is only three letters, but produces nine blocks using the bigraphic operator.<br><br>
+
+					The trigraphic operator creates even more symbols, cubing the size of the original text. "trigraphic:abc" goes off of only three letters, but it would produce 27 blocks.<br><br>
+
+					To accomodate this, that means you need an equal amount of unique cipher key symbols, which can be an extremely difficult or easy task depending on your method.<br><br>
+
+					Do note that for the bigraphic and trigraphic ciphers respectively, the text you encrypt should have a number of characters that is a multiple of 2 or 3. If not, there will be leftover characters unciphered at the end of a string. Additionally, be careful when mixing in symbols not present in the alphabet cipher - other symbols can mess things up by dividing blocks, rendering some text unencrypted.
+				</div>
+
+				<div class="exampleSingle">
+					<h2>Homophonic</h2>
+					<span class="exampleSeperator">Alphabet</span> <vr class="single"></vr> <code class="block">
+						abc
+					</code><br>
+					<span class="exampleSeperator">Cipher</span> <vr class="single"></vr> <code class="block">
+						1|2,3|4,5|6
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						aa ab ac ca ab cc
+					</code><br><br>
+					Possible results:
+					<ul>
+						<li>22 14 25 61 24 55</li>
+						<li>12 13 16 61 23 66</li>
+						<li>21 24 16 62 13 56</li>
+						<li>22 13 15 52 23 65</li>
+					</ul>
+					<button class="exampleButton" data-alphabet="abc" data-cipher="1|2,3|4,5|6" data-input="aa ab ac ca ab cc"></button><hr>
+					Homophony in the cipher key allows characters to be converted, by random chance, to any result seperated by the "|" character. In this example:<br>
+					<ul>
+						<li>"a" can turn into either "1" OR "2".</li>
+						<li>"b" can turn into either "3" OR "4".</li>
+						<li>"c" can turn into either "5" OR "6".</li>
+					</ul>
+					Like the polygraphic ciphering methods, it can help reduce the effectiveness of frequency analysis by diluting the number of symbols.<br>
+					<!-- <span class="exampleSeperator">Result</span> <vr class="single"></vr> Result: "1t 101 0 1t lost!" -->
+				</div>
+
+			</div>
+		</div>
+
+		<div class="section" id="details">
 			<h1>Symbol Map Cipher Details</h1>
-			This cipher uses a technique that does not neccesarily have to be used as a cipher, but for our means will be used as one. There are several instances of websites being capable of mapping one symbol to another, such as Unicode font websites (<a href="https://www.textconverter.net/?text=abc">Text Converter</a>, <a href="https://convertcase.net/unicode-text-converter/">Convert Case</a>, <a href="https://texteditor.com/font-converter/">Text Editor</a>). The symbols used in the sites are designed to be legible to an individual who can read the Latin alphabet, but for the purposes of ciphering, we can use this technique to instead subsitute unreadable symbols into a normal piece of text.<br><br>
+			There are several instances of websites being capable of mapping one symbol to another, such as Unicode font websites (<a href="https://www.textconverter.net/?text=abc">Text Converter</a>, <a href="https://convertcase.net/unicode-text-converter/">Convert Case</a>, <a href="https://texteditor.com/font-converter/">Text Editor</a>). The symbols used in the sites are designed to be legible to an individual who can read the Latin alphabet, but for the purposes of ciphering, we can use this technique to instead subsitute unreadable symbols for letters.<br><br>
 
 			For example, we can subsitute "[" for "a", "]" for "b", and "." for "c". So, "abcccaaabab" would be "[]...[[[][]". These characters do not have any resemblance to the original "abc" letters used.<br>
-			We can extend this to the entire alphabet if we have a set of symbols to match each alphabetical character. However, this cipher does not have to match only the alphabet. By feeding both a set of character to convert from as well as a set of characters to convert to, we can create a key to convert to and from ciphered and unciphered text.<br><br>
+			We can extend this to the entire alphabet if we have a set of symbols to match each alphabetical character. However, this cipher does not have to match only the alphabet. By feeding both a set of character to convert from as well as a set of characters to convert to, we can create a key to convert to and from ciphered and unciphered text using any Unicode symbol you like.<br><br>
 
 			This type of cipher can expand the limits of the subsitution cipher. There are several subsitution techniques which can help in reducing the weakness of traditional subsitution ciphers, more specifically <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a>.
 			<ul>
@@ -106,9 +201,11 @@
 
 			Utilizing these concepts, we can create special keys to strengthen a traditionally 1-1 key.
 
-			<h3>Alphabet Keys</h3>
+			<h2>How to Determine the Symbols to Convert From</h2>
+			Alphabet keys are how you determine what characters to convert in a piece of text. Your traditional layman will probably just think of ciphering English text, but this somewhat vague - what part of the Latin alphabet will we cipher, and will punctuation be included? This is the purpose of the Alphabet Key, to define what characters in a piece of text will be ciphered. We can cipher the lowercase alphabet, or the entire alphabet, or symbols not even included in English. The user decides using an "alphabet key".
+			<br>
 
-			The first part of our ciphers are the alphabet keys. These contain all of the symbols from an unciphered string you convert into ciphered text. With a custom syntax, we can create a special alphabet to convert from:<br>
+			Alphabet keys represent all of the symbols from an unciphered string you convert into ciphered text. Here is an example below of some basic alphabet keys:<br>
 			<dl>
 				<dt>
 					<code class="block">
@@ -144,7 +241,7 @@
 					</code>
 				</dt>
 				<dd>
-					The alphabet key "full-set" translates to the entire alphabet, its numbers, and every basic keyboard symbol (more specifically ASCII characters 32-126), INCLUDING the newline (ASCII character 10). This is 96 characters in total.
+					The alphabet key "full-set" translates to the entire alphabet, its numbers, and every basic punctuation and keyboard symbol (more specifically ASCII characters 32-126), INCLUDING the newline from hitting the Enter key (ASCII character 10). This is 96 characters in total.
 				</dd>
 				<dt>
 					<code class="block">
@@ -198,7 +295,7 @@
 				</dd>
 			</dl>
 
-			<h3>Cipher Keys</h3>
+			<h2>How to Set the Symbols to Convert To</h2>
 
 			Everything demonstrated above is a great and wide variety for alphabet keys, but this does not even include the second half of the ciphering, which are the cipher keys. These are the symbols you want your resulting cipher to have.
 
@@ -246,9 +343,11 @@
 				</dd>
 			</dl>
 
-			<h3>Benefits and Drawbacks</h3>
+			<h2>Benefits and Drawbacks</h2>
 			Depending on who uses the cipher and how, it can be a very strong cipher. The keys for this cipher can vary very heavily, it has support for all Unicode symbols for both encoding and decoding, and it introduces concepts which can help thwart <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a>.<br><br>
-			A very interesting property of being able to use any Unicode character you desire in the cipher key is that you can intentionally utilize the <a href="#unusual-behavior">unusual behavior</a> of certain symbols when it comes to rendering text. Certain characters appear so small that it is very difficult to seperate them just by looking at them or by using your cursor to select them, and certain symbols have no width at all, making them invisible at a glance as if there were no symbols there in the first place. Common characters like spaces or vowels could be replaced with these anomolous characters to provide a disorienting first-glance at the ciphered text.
+			A very interesting property of being able to use any Unicode character you desire in the cipher key is that you can intentionally utilize the unusual behavior of certain symbols when it comes to rendering text. Certain characters appear so small that it is very difficult to seperate them just by looking at them or by using your cursor to select them, and certain symbols have no width at all, making them invisible at a glance as if there were no symbols there in the first place. Common characters like spaces or vowels could be replaced with these anomolous characters to provide a disorienting first-glance at the ciphered text.<br><br>
+
+			For the bigraphic and trigraphic ciphers respectively, the number of characters in a piece of input text should be a multiple of 2 or 3. That is because the cipher will not encrypt leftover strings that cannot fit in a block, typically at the end of a string (do note that some glpyhs that appear as single characters can be multiple characters, such as emojis or letters with diacritics). Additionally, be careful when mixing in symbols not present in the alphabet cipher - other symbols can mess things up by dividing blocks, rendering some text unencrypted in the middle of the string. Always try to either restrict the character set in the original string, or cover as many characters as you need to use.
 
 			<!-- <h2>Custom Equation Cipher</h2> -->
 		</div>
@@ -373,6 +472,24 @@
 		updateCipherList();
 		this.value = "";
 	});
+
+	let loadExampleButtons = document.querySelectorAll(".exampleSingle > .exampleButton");
+	for(let button of loadExampleButtons) {
+		button.textContent = "Load example into cipher";
+		button.addEventListener('click',function(e) {
+			document.getElementById('key').value = this.dataset.cipher;
+			document.getElementById('alphabet').value = this.dataset.alphabet;
+			document.getElementById('cipherFrom').value = this.dataset.input;
+
+			document.querySelector('div.section #cipherFrom').dispatchEvent(new Event("keydown"));
+			document.getElementById('cipherInput').scrollIntoView();
+			window.scrollBy({
+				top: -170,
+				left: 0,
+				behavior: "smooth",
+			});
+		})
+	}
 
 	</script>
 

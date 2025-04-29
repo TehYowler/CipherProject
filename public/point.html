@@ -14,45 +14,30 @@
 </head>
 <body>
 
-	<div id="sidebarWrapper">
-
-		<div class="bar" id="padder"></div>
-		<div class="bar" id="sidebar">
-			<div id="sidebarInner" class="bar max">
-				<button id="pressCipher"    >Main<br>Page</button>
-				<button id="pressCaesar"    >Caesar</button>
-				<button id="pressAlgebraic" >Algebraic</button>
-				<button id="pressPoint"     >Point</button>
-				<button id="pressPlace"     >Place</button>
-				<button id="pressSymbol"    >Symbol</button>
-				<div id="fill"></div>
-			</div>
-		</div>
-		<div class="bar" id="underbar">
-			<div class="verticalCenter" class="max">
-				<h1>All Presets</h1>
-				<div id="cipherList"></div>
-			</div>
-		</div>
-
-	</div>
-
 	<div id="title">
-		<span id="textLeft">
-			Code Point Caesar Cipher
-		</span>
+		<div id="titleInner">
+			<div id="textLeft">
+				Code Point Caesar Cipher
+			</div>
+			<vr style="height: 40px;"></vr>
+			<div id="titleButtonHolder"></div>
+		</div>
+		<h1>Presets</h1>
+		<div id="presetList"></div>
 	</div>
 
 	<div id="mainPage">
 		<div class="section">
 			<h1>How-To</h1>
+			To use this cipher:
 			<ul>
 				<li>Input the string you want to encrypt or decrypt.</li>
 				<li>Input the key as a number. Positives shift right, negatives shift left.</li>
 				<li>If you are decrypting, use the key used to originally encrypt the string and press the "decipher" button.</li>
 			</ul>
-			By saving a preset of this cipher, the browser's local data is updated to store the offset key and ranges for this code-point caesar cipher.
+			Refer to the <a href="#examples">examples</a> section for some examples of using the cipher, and go to <a href="#details">details</a> section for the details of this cipher.<br><br>
 
+			To create a preset for a cipher, look for the orange box to the bottom right of the cipher input section, type in the preset name, and type enter. A preset for that cipher will be created.
 		</div>
 
 		<div class="section">
@@ -69,13 +54,13 @@
 					<span style="display: inline-block; margin: 0 10px;">The cipher range.</span>
 					<textarea id="rangeLower"></textarea> -
 					<textarea id="rangeUpper"></textarea>
-					<span style="display: inline-block; margin: 0 10px;">Input text range.</span>
+					<span style="display: inline-block; margin: 0 10px;">Native text range.</span>
 					<div id="rangeLowerPreview"></div> -
 					<div id="rangeUpperPreview"></div>
 				</div>
 
-				<div style="grid-column: span 1">Decipher using the key.</div> <div style="grid-column: span 1"><toggle id="decipher"></toggle></div>
-				<div style="grid-column: span 1">Preview the result.</div> <div style="grid-column: span 1"><toggle data-clicked="1" id="preview"></toggle></div>
+				<div style="grid-column: span 1">Decipher using the key.</div> <div style="grid-column: span 1"><toggle class="cipher" id="decipher"></toggle></div>
+				<div style="grid-column: span 1">Preview the result.</div> <div style="grid-column: span 1"><toggle class="cipher" data-clicked="1" id="preview"></toggle></div>
 			</div>
 			<div id="dataButtonWrapper">
 				<div></div>
@@ -83,15 +68,66 @@
 				<div style="flex: 0 0 10%"></div>
 				<button class="dataButton" id="saveResultTxt">Save result to text file</button>
 				<div style="flex: 0 0 10%"></div>
-				<textarea class="dataButton" placeholder="Cipher preset - type preset name" id="storePreset"></textarea>
+				<textarea class="dataButton" placeholder="Type preset name, then press enter" id="storePreset"></textarea>
 				<div></div>
 			</div>
 			<div id="showPreview"></div>
 		</div>
 
-		<div class="section">
+		<div class="section" id="examples">
+			<h1>Examples</h1>
+
+			<div class="exampleWrapper">
+
+				<div class="exampleSingle">
+					<h2>Simple</h2>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						4
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						this is red man
+					</code><br>
+					<span class="exampleSeperator">Text Range</span> <vr class="single"></vr> <code class="block">32</code> - <code class="block">116</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> #lm"$m"$!ih$qer
+					<button class="exampleButton" data-key="4" data-input="this is red man" data-lower="" data-upper=""></button><hr>
+					Refer to the <a href="#detials">details</a> section for a more advanced understanding of this cipher.<br>
+				</div>
+
+				<div class="exampleSingle">
+					<h2>Custom Range</h2>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						170
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						that is a cat gary
+					</code><br>
+					<span class="exampleSeperator">Text Range</span> <vr class="single"></vr> <code class="block">32</code> - <code class="block">121</code><br>
+					<span class="exampleSeperator">User Range</span> <vr class="single"></vr> <code class="block">30</code> - <code class="block">250</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> A5.AÊ6@Ê.Ê0.AÊ4.?F
+					<button class="exampleButton" data-key="170" data-input="that is a cat gary" data-lower="30" data-upper="250"></button>
+				</div>
+
+				<div class="exampleSingle" style="flex: 0 0 25%; background: repeating-linear-gradient(-45deg, #221111, #111111 3%, #661111 6%);">
+					<h2 style="background: rgb(195,0,0); color: white;">Avoid</h2>
+					<span class="exampleSeperator">Text Range</span> <vr class="single"></vr> <code class="block">32</code> - <code class="block">116</code><br>
+					<span class="exampleSeperator">User Range</span> <vr class="single"></vr> <code class="block">32</code> - <code class="block">100</code><hr>
+
+					<span class="exampleSeperator">Text Range</span> <vr class="single"></vr> <code class="block">32</code> - <code class="block">116</code><br>
+					<span class="exampleSeperator">User Range</span> <vr class="single"></vr> <code class="block">40</code> - <code class="block">196</code><hr>
+
+					<span class="exampleSeperator">Text Range</span> <vr class="single"></vr> <code class="block">32</code> - <code class="block">116</code><br>
+					<span class="exampleSeperator">User Range</span> <vr class="single"></vr> <code class="block">60</code> - <code class="block">100</code><br><br>
+					Never use custom ranges whose bounds intersect into the native range of the text you are ciphering. This will cause the text to be incapable of being properly deciphered.<br>
+					The lower bound should never be higher, and the upper bound should never be lower.
+				</div>
+
+			</div>
+		</div>
+
+		<div class="section" id="details">
 			<h1>Code Point Caesar Cipher Details</h1>
-			Like the Caesar Cipher, a cipher can be made to shift a set of characters in a direction. However, instead of using only the alphabet, this special cipher can use Unicode code points. By using the <code>ord()</code> and <code>chr()</code> of Python (or similar methods like JS's <code>charCodeAt()</code> or <code>fromCharCode()</code> functions), one can turn individual characters in a string into numbers and vice versa based on their code points according to <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">Unicode</a>.<br><br>
+
+			Like the Caesar Cipher, a cipher can be made to shift a set of characters in a direction. However, instead of using only the alphabet, this special cipher can use Unicode code points. By using the <code>ord()</code> and <code>chr()</code> of Python (or similar methods like JS's <code>charCodeAt()</code> or <code>fromCharCode()</code> functions), one can turn individual characters in a string into numbers and vice versa based on their code points according to <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">Unicode</a>. If you want to convert these on the fly, use <a href="https://cryptii.com/pipes/decimal-text">this website</a> to convert to and from the numeric representations of text.<br><br>
 
 			Using these code points, a range can be created to shift the unicode characters around. The range is inherent to the given string, with the lower bound being the lowest found code point, and the upper bound being the highest found code point.<br>
 			For example, "abcdABCD" maps to "97 98 99 100 65 66 67 68". Our lowest code point is 65, and our highest code point is 100. Our values should wrap between "65" and "100" for any given shift up or down.
@@ -105,11 +141,12 @@
 
 			A very important detail! This cipher is not inherently decipherable if you lack the original range used to create the ciphered text. The range of new charcters is from 66-73, not 65-100. In other words, the range that could produce the ciphered text is a superset of the ciphered text's range, and thus the original range used is ambiguous and can map to MANY different possible ranges. Because of this, even though you only need the mathematical shift key in order to <span style="font-style: italic;">generate</span> the cipher, you will need the shift key <span style="font-weight: bold;">AND</span> the original range to decipher it. However, it is good practice to define a suitable range for BOTH operations, since defaulting the range for the initial encryption to be the highest/lowest points of any character in the string innately exposes more information about the original string. As well as that, for the string to be decipherable, the range must encapsulate the range of the original character set.
 
-			<h3>Benefits and Drawbacks</h3>
+			<h2>Benefits and Drawbacks</h2>
 			This specific type of cipher, to our knowledge, is not widely available at a first-glance. This was simply a cipher created on a whim for this project. Thus, it is probably not a stock cipher you would find online in any place other than here. To crack it, it would require a more advanced knowledge of Unicode code points as well as general cryptography. It will absolutely go under the radar of text parsers, and very likely under the radar of current modern-day AI. Still, however, this cipher is subject to <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way, akin to the original Caesar cipher.<br><br>
 
-			HOWEVER, unlike the original Caesar cipher, this cipher is not restricted to the Latin alphabet only. All symbols for languages that Unicode has support for can be used, so coding messages in different languages can help mess up frequency analysis, as different analysis techniques will have to be used for different languages. Distribution analysis for a language such as written Chinese would be extremely hard to pull off compared to English, as the number of symbols used in the language for normal day-to-day conversation ranges in the thousands. This completely blows English out of the water, having the most-used symbols be only 52 lowercase+uppercase letters, with 10 numeric symbols, a space symbol, a comma and period, and newlines. However, since numbers/spaces/punctuation/newlines are MUCH less common than normal letters, and because uppercase is much less common than lowercase without special text methods, the English language crumbles hard from Frequency Analysis due to its lack of numerous evenly-distributed symbols. Innate and unambiguous multi-language support is an EXTREME upside over the traditional Caesar cipher in the hands of the right person.<br>
-			<span style="color: yellow">Note that because the range of Unicode characters can range from the lowest to the highest, with either one being arbitrary depending on the string's contents and potentially covering hundreds or even thousands of characters, the resulting symbols are subject to the aforementioned <a href="#unusual-behavior">unusual behavior</a></span>. This can be very useful however, as because the symbols generated in the encrypted string can be formed in an arbitrary range, that means a large enough range and offset can be used to make the encrypted string not at all resemble the original string.
+			HOWEVER, unlike the original Caesar cipher, this cipher is not restricted to the Latin alphabet only. All symbols for languages that Unicode has support for can be used, so coding messages in different languages can help mess up frequency analysis, as different analysis techniques will have to be used for different languages. Distribution analysis for a language such as written Chinese would be extremely hard to pull off compared to English, as the number of symbols used in the language for normal day-to-day conversation ranges in the thousands. This completely blows English out of the water, having the most-used symbols be only 52 lowercase+uppercase letters, with 10 numeric symbols, a space symbol, a comma and period, and newlines. However, since numbers/spaces/punctuation/newlines are MUCH less common than normal letters, and because uppercase is much less common than lowercase without special text methods, the English language crumbles hard from Frequency Analysis due to its lack of numerous evenly-distributed symbols. Innate and unambiguous multi-language support is an EXTREME upside over the traditional Caesar cipher in the hands of the right person.<br><br>
+
+			Note that because the range of Unicode characters can range from the lowest to the highest, with either one being arbitrary depending on the string's contents and potentially covering hundreds or even thousands of characters, the resulting symbols are subject to unusual formatting/behavior (e.g. no-width characters, newlines, direction overrides, etc). This can be very useful however, as because the symbols generated in the encrypted string can be formed in an arbitrary range, that means a large enough range and offset can be used to make the encrypted string not at all resemble the original string.
 		</div>
 		<!-- <div class="section">
 			<h1>Section header</h1>
@@ -147,19 +184,13 @@
 	let changeRangePreview = function() {
 		let text = document.getElementById('cipherFrom').value;
 
-		let lower = 0x110000;
-		let upper = 0;
+		fetch("/cipher_point_range", {method: "POST", body: JSON.stringify({text: text})}).then(res => res.json()).then(bounds => {
+			rangeLowerPreview.textContent = bounds[0];
+			rangeUpperPreview.textContent = bounds[1];
 
-		for(let char of text) {
-			lower = Math.min(lower, char.charCodeAt(0))
-			upper = Math.max(upper, char.charCodeAt(0))
-		}
-
-		rangeLowerPreview.textContent = lower;
-		rangeUpperPreview.textContent = upper;
-
-		document.getElementById('rangeLower').placeholder = lower;
-		document.getElementById('rangeUpper').placeholder = upper;
+			document.getElementById('rangeLower').placeholder = bounds[0];
+			document.getElementById('rangeUpper').placeholder = bounds[1];
+		})
 	}
 
 	document.getElementById('cipherFrom').addEventListener('keydown', () => setTimeout(changeRangePreview,0))
@@ -188,6 +219,25 @@
 		updateCipherList();
 		this.value = "";
 	});
+
+	let loadExampleButtons = document.querySelectorAll(".exampleSingle > .exampleButton");
+	for(let button of loadExampleButtons) {
+		button.textContent = "Load example into cipher";
+		button.addEventListener('click',function(e) {
+			document.getElementById('key').value = this.dataset.key;
+			document.getElementById('rangeLower').value = this.dataset.lower;
+			document.getElementById('rangeUpper').value = this.dataset.upper;
+			document.getElementById('cipherFrom').value = this.dataset.input;
+
+			document.querySelector('div.section #cipherFrom').dispatchEvent(new Event("keydown"));
+			document.getElementById('cipherInput').scrollIntoView();
+			window.scrollBy({
+				top: -170,
+				left: 0,
+				behavior: "smooth",
+			});
+		})
+	}
 
 	</script>
 

@@ -13,45 +13,30 @@
 </head>
 <body>
 
-	<div id="sidebarWrapper">
-
-		<div class="bar" id="padder"></div>
-		<div class="bar" id="sidebar">
-			<div id="sidebarInner" class="bar max">
-				<button id="pressCipher"    >Main<br>Page</button>
-				<button id="pressCaesar"    >Caesar</button>
-				<button id="pressAlgebraic" >Algebraic</button>
-				<button id="pressPoint"     >Point</button>
-				<button id="pressPlace"     >Place</button>
-				<button id="pressSymbol"    >Symbol</button>
-				<div id="fill"></div>
-			</div>
-		</div>
-		<div class="bar" id="underbar">
-			<div class="verticalCenter" class="max">
-				<h1>All Presets</h1>
-				<div id="cipherList"></div>
-			</div>
-		</div>
-
-	</div>
-
 	<div id="title">
-		<span id="textLeft">
-			Caesar Cipher
-		</span>
+		<div id="titleInner">
+			<div id="textLeft">
+				Caesar Cipher
+			</div>
+			<vr style="height: 40px;"></vr>
+			<div id="titleButtonHolder"></div>
+		</div>
+		<h1>Presets</h1>
+		<div id="presetList"></div>
 	</div>
 
 	<div id="mainPage">
 		<div class="section">
 			<h1>How-To</h1>
+			To use this cipher:
 			<ul>
 				<li>Input the string you want to encrypt or decrypt.</li>
-				<li>Input the key as a number (wraps between 0-26). Positives shift right, negatives shift left.</li>
+				<li>Input the key as a number (wraps between 1-26). Positives shift right, negatives shift left.</li>
 				<li>If you are decrypting, use the key used to originally encrypt the string and press the "decipher" button.</li>
 			</ul>
-			By saving a preset of this cipher, the browser's local data is updated to store the caesar offset key.
+			Refer to the <a href="#examples">examples</a> section for some examples of using the cipher, and go to <a href="#details">details</a> section for the details of this cipher.<br><br>
 
+			To create a preset for a cipher, look for the orange box to the bottom right of the cipher input section, type in the preset name, and type enter. A preset for that cipher will be created.
 		</div>
 
 		<div class="section">
@@ -62,8 +47,8 @@
 				<input type="file" accept="text/*" id="importText" style="display: none;"/>
 				<button id="importTextRepresent" class="dataButton">Input string from text file</button></div> <textarea id="cipherFrom"></textarea>
 				<div style="grid-column: span 1">The cipher key number.</div> <textarea id="key"></textarea>
-				<div style="grid-column: span 1">Decipher using the key.</div> <div style="grid-column: span 1"><toggle id="decipher"></toggle></div>
-				<div style="grid-column: span 1">Preview the result.</div> <div style="grid-column: span 1"><toggle data-clicked="1" id="preview"></toggle></div>
+				<div style="grid-column: span 1">Decipher using the key.</div> <div style="grid-column: span 1"><toggle class="cipher" id="decipher"></toggle></div>
+				<div style="grid-column: span 1">Preview the result.</div> <div style="grid-column: span 1"><toggle class="cipher" data-clicked="1" id="preview"></toggle></div>
 			</div>
 			<div id="dataButtonWrapper">
 				<div></div>
@@ -71,20 +56,80 @@
 				<div style="flex: 0 0 10%"></div>
 				<button class="dataButton" id="saveResultTxt">Save result to text file</button>
 				<div style="flex: 0 0 10%"></div>
-				<textarea class="dataButton" placeholder="Cipher preset - type preset name" id="storePreset"></textarea>
+				<textarea class="dataButton" placeholder="Type preset name, then press enter" id="storePreset"></textarea>
 				<div></div>
 			</div>
 			<div id="showPreview"></div>
 		</div>
 
-		<div class="section">
+		<div class="section" id="examples">
+			<h1>Examples</h1>
+
+			<div class="exampleWrapper">
+
+				<div class="exampleSingle">
+					<h2>Shift Right</h2>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						1
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						abc cat is rat zzz
+					</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> bcd dbu jt sbu aaa
+					<button class="exampleButton" data-key="1" data-input="abc cat is rat zzz"></button><hr>
+					Shifts the position of the letters in the alphabet right by 1 (a -> b, b -> c, etc.).<br>
+				</div>
+
+				<div class="exampleSingle">
+					<h2>Shift Left</h2>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						-3
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						abc cat is rat zzz
+					</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> xyz zxq fp oxq www
+					<button class="exampleButton" data-key="-3" data-input="abc cat is rat zzz"></button><hr>
+					Shifts the position of the letters in the alphabet left by three.<br>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="section" id="details">
 			<h1>Caesar Cipher Details</h1>
-			The Caesar Cipher is an extremely simple cipher which ciphers an alphabet whose order is shifted forwards or backwards.<br>
-			Shifting once right, ABCDXYZ -> BCDEYZA.<br>
-			Shifting three time left, ABCDXYZ -> XYZAUVW.
+			The Caesar Cipher is an extremely simple cipher which ciphers an alphabet whose order is shifted forwards or backwards.<br><br>
+
+			Say you have two (shortened) alphabets:<br>
+<pre>
+<span style="color: grey;">a</span> b c d e f g <span style="color: grey;">h</span>
+  ↓ ↓ ↓ ↓ ↓ ↓
+  b c d e f g
+</pre>
+
+			If we shift the top alphabet by some amount of times left or right, we can map old letters to new letters and perform a Caesar cipher.<br>
+			For example, if we shift rightwards once:<br>
+<pre>
+<span style="color: grey;">z</span> a b c d e f <span style="color: grey;">g</span>
+  ↓ ↓ ↓ ↓ ↓ ↓
+  b c d e f g
+</pre>
+			Every "a" in a piece of text would become a "b", every "b" into a "c", etc.
+
+			If we shift right against (thus shifting right twice), we get:
+			For example, if we shift rightwards once:<br>
+<pre>
+<span style="color: grey;">y</span> z a b c d e <span style="color: grey;">f</span>
+  ↓ ↓ ↓ ↓ ↓ ↓
+  b c d e f g
+</pre>
+
+			As you can see, the alphabet wraps around from A-Z, which is why there is a Z in the portion of the alphabet even though nothing comes before the letter A.<br>
+			With the last shift (shifting right twice), if we have a piece of text like "zed abc", it will become "bgf cde".<br>
+			You can cross-reference that result with the table, or <button class="exampleButton" data-key="2" data-input="zed abc" data-nodefault style="display: inline;">see it yourself in the program.</button>
 
 			<h2>Benefits and Drawbacks</h2>
-			The Caesar cipher is immensely easy to perform, but is also equally as easy to decode. It is one of the most common ciphers, and it is very impractical if you actually desire the contents of your message to be safe. At best, it will only thwart strict text parsers, but likely won't get past a normal person who knows even surface-level cryptography as it can even be descrypted by hand. Even worse, an English-only Caesar cipher presumes the English language, which helps narrow things down. Also, Caesar ciphers are subject to raw <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way. Also, Caesar ciphers are traditionally case insensitive and ignore spaces and punctuation, resulting in less symbols.
+			The Caesar cipher is immensely easy to perform, but is also equally as easy to decode. It is one of the most common ciphers, and it is very impractical if you actually desire the contents of your message to be safe. At best, it will only thwart strict text parsers, but likely won't get past a normal person who knows even surface-level cryptography as it can even be decrypted by hand. Even worse, an English-only Caesar cipher presumes the English language, which helps narrow things down. Also, Caesar ciphers are subject to raw <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way. Also, Caesar ciphers are traditionally case insensitive and ignore spaces and punctuation, resulting in less symbols.
 		</div>
 		<!-- <div class="section">
 			<h1>Section header</h1>
@@ -129,6 +174,25 @@
 		updateCipherList();
 		this.value = "";
 	});
+
+	let loadExampleButtons = document.querySelectorAll(".exampleButton");
+	for(let button of loadExampleButtons) {
+		if(!Object.hasOwn(button.dataset, "nodefault"))
+			button.textContent = "Load example into cipher";
+
+		button.addEventListener('click',function(e) {
+			document.getElementById('key').value = this.dataset.key;
+			document.getElementById('cipherFrom').value = this.dataset.input;
+
+			document.querySelector('div.section #cipherFrom').dispatchEvent(new Event("keydown"));
+			document.getElementById('cipherInput').scrollIntoView();
+			window.scrollBy({
+				top: -170,
+				left: 0,
+				behavior: "smooth",
+			});
+		})
+	}
 
 	</script>
 

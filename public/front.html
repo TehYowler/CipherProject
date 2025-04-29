@@ -14,54 +14,57 @@
 </head>
 <body>
 
-	<div id="sidebarWrapper">
-
-		<div class="bar" id="padder"></div>
-		<div class="bar" id="sidebar">
-			<div id="sidebarInner" class="bar max">
-				<button id="pressCipher"    >Main<br>Page</button>
-				<button id="pressCaesar"    >Caesar</button>
-				<button id="pressAlgebraic" >Algebraic</button>
-				<button id="pressPoint"     >Point</button>
-				<button id="pressPlace"     >Place</button>
-				<button id="pressSymbol"    >Symbol</button>
-				<div id="fill"></div>
-			</div>
-		</div>
-		<div class="bar" id="underbar">
-			<div class="verticalCenter" class="max">
-				<h1>All Presets</h1>
-				<div id="cipherList"></div>
-			</div>
-		</div>
-
-	</div>
-
 	<div id="title">
-		<span id="textLeft">
-			Enter the Crypt
-		</span>
+		<div id="titleInner">
+			<div id="textLeft">
+				Enter the Crypt
+			</div>
+			<vr style="height: 40px;"></vr>
+			<div id="titleButtonHolder"></div>
+		</div>
+		<h1>Presets</h1>
+		<div id="presetList"></div>
 	</div>
 
 	<div id="mainPage">
 		<div class="section">
 			<h1>How-To</h1>
-			Welcome to Enter the Crypt! Hover over the sidebar on the left to display your options. At the top of it you can:
+			Welcome to Enter the Crypt! Using the buttons at the top the page, you can:
 			<ul>
 				<li>Access the main info page (here).</li>
 				<li>Access or use any specific cipher and its information.</li>
+				<li>Access and manage any stored presets you may have.</li>
 			</ul>
-			By interacting with the bottom portion, you can access saved cipher presets.<br><br>
-
-			<!-- Available ciphers:
-			<ul>
-				<li><a href="./public/caesar.html">Caesar Cipher</a></li>
-				<li><a href="./public/algebraic.html">Custom Algebraic Cipher</a></li>
-				<li><a href="./public/point.html">Code-Point Caesar Cipher</a></li>
-				<li><a href="./public/place.html">In-Place Caesar Cipher</a></li>
-				<li><a href="./public/symbol.html">Symbol Map Cipher</a></li>
-			</ul> -->
+			To create a preset for a cipher, look for the orange box to the bottom right of the cipher input section, type in the preset name, and type enter. A preset for that cipher will be created.
 		</div>
+
+		<div class="section">
+			<h1>Cipher Types</h1>
+			This program uses and explains the workings of five basic ciphers.
+			<h2>Caesar Cipher</h2>
+			The caesar cipher is a very basic cipher. For a specific key, each letter in a piece of text has its position in the alphabet shifted by a certain amount of times called the key.
+			For example, a key of 1 would push each letter in a string to the right one. "abc" would become "bcd", and "The cat" would become "Uif dbu".<br>
+			A key of 3 would push letters back three, so "abc" would become "def".<br>
+			A key of -1 would push letters leftward, so "abc" would become "zab".
+			<h2>Code Point Cipher</h2>
+			The Code Point cipher converts every character in the text into their Unicode point values (numeric representations of text). A range is created between the lowest and highest values, and the result is obtained when the cipher key is added to each value before wrapping them between the range, before converting the numeric result back to text as a ciphered version. The range can also be set manually by the user.
+			<h2>In-Place Cipher</h2>
+			The In-Place cipher gathers every unique symbol in the text, arranging them in ascending order based on their numeric value. Then those symbols are shifted based on the key used (negative is left, positive is right), and then the original text has its symbols mapped to the shifted symbols based on the order of each.
+			<h2>Algebraic Cipher</h2>
+			The algebraic cipher allows the user to input an equation with the variable "x", e.g. "x * 2" or "x + 1", which ciphers the text by altering the numeric representations of the characters.
+			<h2>Symbol Map Cipher</h2>
+			The symbol map cipher allows the user to enter their own conversion method. They can define the symbols to convert from, and the symbols to convert to.
+			<h1>Common Cipher Issues And Occurances</h1>
+			Many ciphers have similar issues when it comes to their effectiveness as a cipher, or when it comes to the potentailly unusual results of some ciphers.
+			<h2>Frequency Analysis</h2>
+			For every cipher except the Symbol Map cipher (which only sometimes has this issue depending on how the user sets it up), most ciphers are subject to being cracked by <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to matching <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>. Since the frequency of letters are not at all altered in any way with most ciphers, that means that by finding the most common cipher symbols and replacing them with the most common letters, it is easy to crack a cipher as long as you possess a sufficiently large amount of text.<br>
+			Only the Symbol Map cipher is capable of subverting this directly with its use of homophonic and polygraphic ciphering techniques that the user can employ.
+			<h2>Special Symbols</h2>
+			When we think of characters, we usually think of small letters or even spaces. However, newlines are also characters. There are also characters in Unicode that have no width, or that alter the direction of text, or that appear significantly larger than other pieces of text. Such characters may occasionally pop up in a piece of ciphered text and interfere with the ease of use of a cipher. For example, if there is a newline in an In-Place cipher, chances are it will appear a significant amount of times more than usual and cause many many line breaks. This is one of the reasons ciphered text can be saved to a file, to reduce the chance of unusual text being improperly copied and pasted.
+		</div>
+
+		<!-- This is outdated stuff.
+
 		<div class="section">
 			<h1>Inner Workings of the Ciphers in "Enter the Crypt"</h1>
 			A subsitution cipher alters each character to have a corresponding subsitute. This cipher tool aims to perform several different types of subsitution ciphers on given text.
@@ -71,7 +74,7 @@
 			<span id="unusual-behavior" style="color: var(--light)">Note that for certain subsitutions, special characters may be used that inhibit <a style="text-decoration: underline;">unusual behavior</a> on that can alter how text is rendered</span>, like the <a href="https://en.wikipedia.org/wiki/Newline">newline</a> that starts a new line or <a href="https://unicode-explorer.com/c/202E">directional overrides</a> that change character direction. Some characters might not be capable of being rendered at all, and some characters have anomolous characteristics like combining into each other like emojis or diacritics, or having unusual length (extremely large/long: "𒐫", "𒈙", "⸻", extremely small: " ", " ", zero-width: " ", "﻿", "᠎").<br><br>
 				To handle the issues of visibility and rendering, <span style="color: var(--light); text-decoration: underline;">it is advised to ALWAYS handle these unique symbols either through a text file or through a button to copy to the clipboard</span>, ensuring no loss of information or confusion when copying and saving resulting ciphered strings.
 
-			<h2>Caesar Cipher</h2>
+			<h2>Caesar Cipher: How it Works and Tradeoffs</h2>
 			The Caesar Cipher is an extremely simple cipher which ciphers an alphabet whose order is shifted forwards or backwards.<br>
 			Shifting once right, ABCDXYZ -> BCDEYZA.<br>
 			Shifting three time left, ABCDXYZ -> XYZAUVW.
@@ -79,7 +82,7 @@
 			<h3>Benefits and Drawbacks</h3>
 			The Caesar cipher is immensely easy to perform, but is also equally as easy to decode. It is one of the most common ciphers, and it is very impractical if you actually desire the contents of your message to be safe. At best, it will only thwart strict text parsers, but likely won't get past a normal person who knows even surface-level cryptography as it can even be descrypted by hand. Even worse, an English-only Caesar cipher presumes the English language, which helps narrow things down. Also, Caesar ciphers are subject to raw <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way. Also, Caesar ciphers are traditionally case insensitive and ignore spaces and punctuation, resulting in less symbols.
 
-			<h2>Custom Algebraic Cipher</h2>
+			<h2>Custom Algebraic Cipher: How it Works and Tradeoffs</h2>
 			By using the <code>ord()</code> and <code>chr()</code> of Python (or similar methods like JS's <code>charCodeAt()</code> or <code>fromCharCode()</code> functions), one can turn individual characters in a string into numbers and vice versa based on their code points according to <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">Unicode</a>. This numeric alteration of a string of text allows for ciphers to be represented as mathematical equations, which is implemented by allowing users to input an equation to act as a cipher. <span style="color: yellow">Uppercase letters have different code points than lowercase letters.</span>
 
 			<h3>Rules</h3>
@@ -89,7 +92,6 @@
 				<li>The equation should pass both the vertical line test AND the horizontal line test for any given inputs. In other words, there should be no repeats in either input or output for a given relation. For this reason, cyclic functions like sine waves would be invalid most of the time since they are periodic and pass through the same inputs repeatedly (failing the horizontal line test). Even-degree polynomials (e.g. parabolas) or polynomials that have bumps also can fail this, like parabolas (from squaring) that fail if there are both negative and positive results.</li>
 				<li>All outputs must create an integer, and exactly an integer with no decimals.</li>
 				<li>All results must range from 0-1114111 due to the Unicode limit.</li>
-				<li>(extra functionality).</li>
 			</ol>
 
 			Using code points and equations, the code points of each character in a string can be modified by mapping their values via an equation. For example, the string "abcd" maps to "97 98 99 100". If we use the key "x*2", we get:<br>
@@ -104,7 +106,7 @@
 			The upsides of this technique is that it is not nearly as easily reversable as a Caesar cipher, and the key can vary VERY heavily depending on the mathematical proficiency one has to write equations that satisfy the rules above. A text parser will not be able to get any information out of it, and depending on what chatbot sees it, an AI likely will not be capable of reversing the string. However, it can be very clunky for a person who wants a quick-and-done encyption to come up with a unique equation each time they want to generate a unique key, and it is very likely a person will simply resort to using a simple linear equation each time, which can be made for more predictable keys. Also, while this can technically support all Unicode symbols from any different language, when the code points of characters that go into certain boundaries, it can be difficult to keep code points within the range of 0-1114111. Also, because each conversion is 1-1, this cipher is subject to <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way like the Caesar cipher.<br>
 			<span style="color: yellow">Additionally, because the equations can spit out arbitrary Unicode characters from the equation used, the resulting symbols are subject to the aforementioned <a href="#unusual-behavior">unusual behavior</a></span>.
 
-			<h2>Code Point Caesar Cipher</h2>
+			<h2>Code Point Caesar Cipher: How it Works and Tradeoffs</h2>
 			Like the Caesar Cipher, a cipher can be made to shift a set of characters in a direction. However, instead of using only the alphabet, this special cipher can use Unicode code points from before as a range to shift around. The range is inherent to the given string, with the lower bound being the lowest found code point, and the upper bound being the highest found code point.<br>
 			For example, "abcdABCD" maps to "97 98 99 100 65 66 67 68". Our lowest code point is 65, and our highest code point is 100. Our values should wrap between "65" and "100" for any given shift.
 			Thus, to shift right five times, we should get:<br>
@@ -121,7 +123,7 @@
 			HOWEVER, unlike the original Caesar cipher, this cipher is not restricted to the Latin alphabet only. All symbols for languages that Unicode has support for can be used, so coding messages in different languages can help mess up frequency analysis, as different analysis techniques will have to be used for different languages. Distribution analysis for a language such as written Chinese would be extremely hard to pull off compared to English, as the number of symbols used in the language for normal day-to-day conversation ranges in the thousands. This completely blows English out of the water, having the most-used symbols be only 52 lowercase+uppercase letters, with 10 numeric symbols, a space symbol, a comma and period, and newlines. However, since numbers/spaces/punctuation/newlines are MUCH less common than normal letters, and because uppercase is much less common than lowercase without special text methods, the English language crumbles hard from Frequency Analysis due to its lack of numerous evenly-distributed symbols. Innate and unambiguous multi-language support is an EXTREME upside over the traditional Caesar cipher in the hands of the right person.<br>
 			<span style="color: yellow">Note that because the range of Unicode characters can range from the lowest to the highest, with either one being arbitrary depending on the string's contents and potentially covering hundreds or even thousands of characters, the resulting symbols are subject to the aforementioned <a href="#unusual-behavior">unusual behavior</a></span>. This can be very useful however, as because the symbols generated in the encrypted string can be formed in an arbitrary range, if even one Unicode symbol goes far into the thousands range then the symbols between the original string and the ciphered string may not even match at all, which means that the symbols in the original string may not even be deductable from the encrypted string.
 
-			<h2>In-Place Caesar Cipher</h2>
+			<h2>In-Place Caesar Cipher: How it Works and Tradeoffs</h2>
 			This is similar to the last cipher, the range defined based on the string itself. However, this time, we get the code points ordered in ascending order, and then we shift each code point to the right or left.<br>
 			For example, "acdAAABCDDD" maps to "97 99 100 65 65 65 66 67 68 68 68". Sorted in ascending order, we get "65 66 67 68 97 99 100". Shifting over left one gives "66 67 68 97 99 100 65". Thus, 65 maps to 66, 66 maps to 67, 68 maps to 97, etc.<br>
 			<code>
@@ -137,7 +139,7 @@
 			<span style="color:rgb(0,255,0)">Note that because all characters are in-place and do not use extra arbitrary symbols that reside outside of the original string, the resulting symbols are not subject to <a href="#unusual-behavior">unusual behavior</a>.</span> The only common odd-case that should occur would be if newlines get shuffled into a common character, or if your method of storing strings snips consecutive spaces in strings were spaces get shuffled to repeat.<br>
 			<span style="color:orange">One major weakness this cipher has compared to the previous cipher is that the ciphered text is made enitrely out of the symbols in the original text due to being completely in-place. This means that while the use of arbitrary symbols that may cause unusual behavior will not occur, the general form of the original string can still be inferred DIRECTLY from the ciphered text like the language. This is a major aspect of weakness for the cipher.</span>
 
-			<h2>Symbol Map Cipher</h2>
+			<h2>Symbol Map Cipher: How it Works and Tradeoffs</h2>
 			This cipher uses a technique that does not neccesarily have to be used as a cipher, but for our means will be used as one. There are several instances of websites being capable of mapping one symbol to another, such as Unicode font websites (<a href="https://www.textconverter.net/?text=abc">Text Converter</a>, <a href="https://convertcase.net/unicode-text-converter/">Convert Case</a>, <a href="https://texteditor.com/font-converter/">Text Editor</a>). The symbols used in the sites are designed to be legible to an individual who can read the Latin alphabet, but for the purposes of ciphering, we can use this technique to instead subsitute unreadable symbols into a normal piece of text.<br><br>
 
 			For example, we can subsitute "[" for "a", "]" for "b", and "." for "c". So, "abcccaaabab" would be "[]...[[[][]". These characters do not have any resemblance to the original "abc" letters used.<br>
@@ -294,14 +296,9 @@
 			<h3>Benefits and Drawbacks</h3>
 			Depending on who uses the cipher and how, it can be a very strong cipher. The keys for this cipher can vary very heavily, it has support for all Unicode symbols for both encoding and decoding, and it introduces concepts which can help thwart <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a>.<br><br>
 			A very interesting property of being able to use any Unicode character you desire in the cipher key is that you can intentionally utilize the <a href="#unusual-behavior">unusual behavior</a> of certain symbols when it comes to rendering text. Certain characters appear so small that it is very difficult to seperate them just by looking at them or by using your cursor to select them, and certain symbols have no width at all, making them invisible at a glance as if there were no symbols there in the first place. Common characters like spaces or vowels could be replaced with these anomolous characters to provide a disorienting first-glance at the ciphered text.
-
-			<!-- <h2>Custom Equation Cipher</h2> -->
 		</div>
-		<!-- <div class="section">
-			<h1>Section header</h1>
 
-
-		</div> -->
+		-->
 	</div>
 
 	<script src="init.js"></script>

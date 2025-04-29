@@ -9,6 +9,7 @@ from http.server import HTTPServer;
 
 import cipher; #Custom cipher module.
 
+import webbrowser; #For opening a new browser window.
 
 #The structure of the web server originated from:
 #https://realpython.com/python-http-server/#serve-static-and-dynamic-content-programmatically
@@ -133,6 +134,19 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 				self.wfile.write(send);
 			return;
 
+		if(self.url.path == "/cipher_point_range"):
+			try:
+				data = json.loads(self.post_data.decode("utf-8"));
+				send = json.dumps(list(cipher.codePointRange(data["text"]))).encode("utf-8");
+			except:
+				self.send_error(400, "Could not return string range.")
+			else:
+				self.send_response(200);
+				self.send_header("Content-Type", "text/plain");
+				self.end_headers();
+				self.wfile.write(send);
+			return;
+
 		if(self.url.path == "/cipher_algebraic"):
 			try:
 				data = json.loads(self.post_data.decode("utf-8"));
@@ -185,5 +199,6 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
 #Start a server on port 8080 if the file is being ran directly.
 if __name__ == "__main__":
-    server = HTTPServer(("0.0.0.0", 8080), WebRequestHandler);
-    server.serve_forever();
+	webbrowser.open('http://localhost:8080/', new=2);
+	server = HTTPServer(("0.0.0.0", 8080), WebRequestHandler);
+	server.serve_forever();

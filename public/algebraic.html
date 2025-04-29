@@ -14,45 +14,30 @@
 </head>
 <body>
 
-	<div id="sidebarWrapper">
-
-		<div class="bar" id="padder"></div>
-		<div class="bar" id="sidebar">
-			<div id="sidebarInner" class="bar max">
-				<button id="pressCipher"    >Main<br>Page</button>
-				<button id="pressCaesar"    >Caesar</button>
-				<button id="pressAlgebraic" >Algebraic</button>
-				<button id="pressPoint"     >Point</button>
-				<button id="pressPlace"     >Place</button>
-				<button id="pressSymbol"    >Symbol</button>
-				<div id="fill"></div>
-			</div>
-		</div>
-		<div class="bar" id="underbar">
-			<div class="verticalCenter" class="max">
-				<h1>All Presets</h1>
-				<div id="cipherList"></div>
-			</div>
-		</div>
-
-	</div>
-
 	<div id="title">
-		<span id="textLeft">
-			Custom Algebraic Cipher
-		</span>
+		<div id="titleInner">
+			<div id="textLeft">
+				Algebraic Cipher
+			</div>
+			<vr style="height: 40px;"></vr>
+			<div id="titleButtonHolder"></div>
+		</div>
+		<h1>Presets</h1>
+		<div id="presetList"></div>
 	</div>
 
 	<div id="mainPage">
 		<div class="section">
 			<h1>How-To</h1>
+			To use this cipher:
 			<ul>
 				<li>Input the string you want to encrypt or decrypt.</li>
 				<li>Input the key as an equation based on the varible "x" (where "x" is the code point of any given character).</li>
 				<li>If you are decrypting, use the key used to originally encrypt the string and press the "decipher" button.</li>
 			</ul>
-			By saving a preset of this cipher, the browser's local data is updated to store the algebraic key.
+			Refer to the <a href="#examples">examples</a> section for some examples of using the cipher, and go to <a href="#details">details</a> section for the details of this cipher.<br><br>
 
+			To create a preset for a cipher, look for the orange box to the bottom right of the cipher input section, type in the preset name, and type enter. A preset for that cipher will be created.
 		</div>
 
 		<div class="section">
@@ -62,9 +47,9 @@
 				<button class="dataButton" id="importClip">Paste from clipboard</button>
 				<input type="file" accept="text/*" id="importText" style="display: none;"/>
 				<button id="importTextRepresent" class="dataButton">Input string from text file</button></div> <textarea id="cipherFrom"></textarea>
-				<div style="grid-column: span 1">The cipher key equation.</div> <textarea id="key"></textarea>
-				<div style="grid-column: span 1">Decipher using the key.</div> <div style="grid-column: span 1"><toggle id="decipher"></toggle></div>
-				<div style="grid-column: span 1">Preview the result.</div> <div style="grid-column: span 1"><toggle data-clicked="1" id="preview"></toggle></div>
+				<div style="grid-column: span 1">The cipher equation.</div> <textarea id="key"></textarea>
+				<div style="grid-column: span 1">Decipher using the key.</div> <div style="grid-column: span 1"><toggle class="cipher" id="decipher"></toggle></div>
+				<div style="grid-column: span 1">Preview the result.</div> <div style="grid-column: span 1"><toggle class="cipher" data-clicked="1" id="preview"></toggle></div>
 			</div>
 			<div id="dataButtonWrapper">
 				<div></div>
@@ -72,15 +57,84 @@
 				<div style="flex: 0 0 10%"></div>
 				<button class="dataButton" id="saveResultTxt">Save result to text file</button>
 				<div style="flex: 0 0 10%"></div>
-				<textarea class="dataButton" placeholder="Cipher preset - type preset name" id="storePreset"></textarea>
+				<textarea class="dataButton" placeholder="Type preset name, then press enter" id="storePreset"></textarea>
 				<div></div>
 			</div>
 			<div id="showPreview"></div>
 		</div>
 
-		<div class="section">
+		<div class="section" id="examples">
+			<h1>Examples</h1>
+
+			<div class="exampleWrapper">
+
+				<div class="exampleSingle">
+					<h2>Addition</h2>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						x+1
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						yeah, zed
+					</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> zfbi-!{fe
+					<button class="exampleButton" data-key="x+1" data-input="yeah, zed"></button><hr>
+					The way the algebraic cipher works is by turning each character into their numeric equivalents called Unicode points.<br>
+					Then, those numbers are put through the equation as the variable "x" and then turned back into characters.<br>
+					For "x+1", letters a-y work similarly to a Caesar cipher with a key of 1, shifting them right one place in the alphabet.<br>
+					The letter "z" and spaces or punctuation, however, return noticeably different results as they transmutate into different symbols.<br><br>
+					The numeric representation of "," is 44, and 44+1 is 45, which corresponds to the hyphen/dash symbol "-".<br>
+					The numeric representation of a space is 32, and 32+1 is 33, which corresponds to the exclamation mark "!".<br>
+					The numeric representation of "z" is 122, and 122+1 is 123, which corresponds to the left brace symbol "{".<br>
+					<a href="https://www.asciihex.com/ascii-table">This ASCII table can show you the numeric representation of characters up until 127.</a> Use the cyan numbers in the "DEC" (decimal) column.<br>
+				</div>
+
+				<div class="exampleSingle" style="flex: 0 0 25%;">
+					<h2>Linear</h2>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						x*3 + 5
+					</code><br>
+					<span class="exampleSeperator">Text</span> <vr class="single"></vr> <code class="block">
+						welcome, cole
+					</code><br>
+					<span class="exampleSeperator">Result</span> <vr class="single"></vr> ŪĴŉĮŒŌĴeĮŒŉĴĩōńį
+					<button class="exampleButton" data-key="x*3 + 5" data-input="welcome, cole"></button><hr>
+					Similar to the addition example, pieces of text are interpretted as numbers before being put through the equation key.<br>
+				</div>
+
+				<div class="exampleSingle" style="flex: 0 0 25%; background: repeating-linear-gradient(-45deg, #221111, #111111 3%, #661111 6%);">
+					<h2 style="background: rgb(195,0,0); color: white;">Avoid</h2>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						x/2
+					</code><br>
+					Avoid keys that can produce decimals or fractions.
+					<hr>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						55
+					</code><br>
+					Avoid static keys that only return a constant result.
+					<hr>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						x**2
+					</code><br>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						x**3 - x
+					</code><br>
+					Avoid keys that fail the horizontal line test, such as parabolas, periodic functions, or most polynomials. This is because they have multiple inverse functions and it is not usually feasable to decipher those keys.
+					<hr>
+					<span class="exampleSeperator">Key</span> <vr class="single"></vr> <code class="block">
+						y+1
+					</code><br>
+					Only use the variable "x".
+				</div>
+
+			</div>
+		</div>
+
+		<div class="section" id="details">
 			<h1>Algebraic Cipher Details</h1>
-			By using the <code>ord()</code> and <code>chr()</code> of Python (or similar methods like JS's <code>charCodeAt()</code> or <code>fromCharCode()</code> functions), one can turn individual characters in a string into numbers and vice versa based on their code points according to <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">Unicode</a>. This numeric alteration of a string of text allows for ciphers to be represented as mathematical equations, which is implemented by allowing users to input an equation to act as a cipher. <span style="color: yellow">Uppercase letters have different code points than lowercase letters.</span>
+			By using the <code>ord()</code> and <code>chr()</code> of Python (or similar methods like JS's <code>charCodeAt()</code> or <code>fromCharCode()</code> functions), one can turn individual characters in a string into numbers and vice versa based on their code points according to <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">Unicode</a>. If you want to convert these on the fly, use <a href="https://cryptii.com/pipes/decimal-text">this website</a> to convert to and from the numeric representations of text.<br><br>
+
+				This numeric alteration of a string of text allows for ciphers to be represented as mathematical equations, which is implemented by allowing users to input an equation to act as a cipher.
 
 			<h2>Rules</h2>
 
@@ -89,7 +143,6 @@
 				<li>The equation should pass both the vertical line test AND the horizontal line test for any given inputs. In other words, there should be no repeats in either input or output for a given relation. For this reason, cyclic functions like sine waves would be invalid most of the time since they are periodic and pass through the same inputs repeatedly (failing the horizontal line test). Even-degree polynomials (e.g. parabolas) or polynomials that have bumps also can fail this, like parabolas (from squaring) that fail if there are both negative and positive results.</li>
 				<li>All outputs must create an integer, and exactly an integer with no decimals.</li>
 				<li>All results must range from 0-1114111 due to the Unicode limit.</li>
-				<li>(extra functionality).</li>
 			</ol>
 
 			Using code points and equations, the code points of each character in a string can be modified by mapping their values via an equation. For example, the string "abcd" maps to "97 98 99 100". If we use the key "x*2", we get:<br>
@@ -101,8 +154,7 @@
 			This translates to "ÂÄÆÈ", the result of doubling the character code points.<br><br>
 
 			<h2>Benefits and Drawbacks</h2>
-			The upsides of this technique is that it is not nearly as easily reversable as a Caesar cipher, and the key can vary VERY heavily depending on the mathematical proficiency one has to write equations that satisfy the rules above. A text parser will not be able to get any information out of it, and depending on what chatbot sees it, an AI likely will not be capable of reversing the string. However, it can be very clunky for a person who wants a quick-and-done encyption to come up with a unique equation each time they want to generate a unique key, and it is very likely a person will simply resort to using a simple linear equation each time, which can be made for more predictable keys. Also, while this can technically support all Unicode symbols from any different language, when the code points of characters that go into certain boundaries, it can be difficult to keep code points within the range of 0-1114111. Also, because each conversion is 1-1, this cipher is subject to <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way like the Caesar cipher.<br>
-			<span style="color: yellow">Additionally, because the equations can spit out arbitrary Unicode characters from the equation used, the resulting symbols are subject to the aforementioned <a href="#unusual-behavior">unusual behavior</a></span>.
+			The upsides of this technique is that it is not nearly as easily reversable as a Caesar cipher, and the key can vary VERY heavily depending on the mathematical proficiency one has to write equations that satisfy the rules above. A text parser will not be able to get any information out of it, and depending on what chatbot sees it, an AI likely will not be capable of reversing the string. However, it can be very clunky for a person who wants a quick-and-done encyption to come up with a unique equation each time they want to generate a unique key, and it is very likely a person will simply resort to using a simple linear equation each time, which can be made for more predictable keys. Also, while this can technically support all Unicode symbols from any different language, when the code points of characters that go into certain boundaries, it can be difficult to keep code points within the range of 0-1114111. Also, because each conversion is 1-1, this cipher is subject to <a href="https://en.wikipedia.org/wiki/Frequency_analysis">frequency analysis</a> in regards to <a href="https://en.wikipedia.org/wiki/Letter_frequency">letter frequency</a>, since the frequency of letters are not at all altered in any way like the Caesar cipher.
 			<!-- <h2>Custom Equation Cipher</h2> -->
 		</div>
 		<!-- <div class="section">
@@ -148,6 +200,23 @@
 		updateCipherList();
 		this.value = "";
 	});
+
+	let loadExampleButtons = document.querySelectorAll(".exampleSingle > .exampleButton");
+	for(let button of loadExampleButtons) {
+		button.textContent = "Load example into cipher";
+		button.addEventListener('click',function(e) {
+			document.getElementById('key').value = this.dataset.key;
+			document.getElementById('cipherFrom').value = this.dataset.input;
+
+			document.querySelector('div.section #cipherFrom').dispatchEvent(new Event("keydown"));
+			document.getElementById('cipherInput').scrollIntoView();
+			window.scrollBy({
+				top: -170,
+				left: 0,
+				behavior: "smooth",
+			});
+		})
+	}
 
 	</script>
 
