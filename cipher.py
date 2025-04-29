@@ -1,6 +1,9 @@
 #Typing extras.
 from typing import Iterable
-from typing_extensions import Any;
+try:
+	from typing_extensions import Any;
+except:
+	from typing import Any;
 from copy import copy;
 
 #Sympy - A Python module for mathematical computation.
@@ -13,6 +16,9 @@ import re
 
 #RNG for homophony in the Symbol Map Cipher.
 import random;
+
+#For caching individual characters in a string (priamrily for increasing performance on test runs, not actual performance.)
+from functools import cache;
 
 #Gets the unique values in an iterable and returns a list of those elements, while retaining order.
 def unique(inputArray: Iterable) -> list:
@@ -201,8 +207,8 @@ class AlgebraicCipher:
 		#Then, returns a constant string depending on the result.
 
 		try:
-			AlgebraicCipher.encryptAll(equation,chars);
-			AlgebraicCipher.decryptAll(equation, AlgebraicCipher.encryptAll(equation,chars));
+			result = AlgebraicCipher.encryptAll(equation,chars);
+			AlgebraicCipher.decryptAll(equation, result);
 			return AlgebraicCipher.SUCCESS; #If no errors happen to this point, return a success.
 		#Otherwise, of the many error cases, return a massge corresponding to that error case.
 		except StringError as error:
@@ -225,8 +231,8 @@ class AlgebraicCipher:
 	def decryptPossible(equation: str|Expr, chars: str|Iterable[str] = allASCII) -> str:
 
 		try:
-			AlgebraicCipher.decryptAll(equation,chars);
-			AlgebraicCipher.encryptAll(equation, AlgebraicCipher.decryptAll(equation,chars));
+			result = AlgebraicCipher.decryptAll(equation,chars);
+			AlgebraicCipher.encryptAll(equation, result);
 			return AlgebraicCipher.SUCCESS;
 		except StringError as error:
 			return AlgebraicCipher.STRING_ERROR;
@@ -245,40 +251,55 @@ class AlgebraicCipher:
 
 # -- Caesar-like ciphers. --
 
-#Performa a traditional caesar cipher.
+#Perorming a caesar cipher on an individual character
+@cache
+def caesarChar(char, key):
+	#If the character is lowercase, cipher its lowercase variant.
+	if( char in lowered(alphabet) ):
+		index = lowered(alphabet).index(char);
+		index += key;
+		index %= 26;
+		return lowered(alphabet)[index];
+	#If the character is uppercase, cipher its lowercase variant.
+	elif( char in uppered(alphabet) ):
+		index = uppered(alphabet).index(char);
+		index += key;
+		index %= 26;
+		return uppered(alphabet)[index];
+	#For all other cases like spaces or punctuation, ignore any special operations and just add it to the string.
+	else:
+		return char
+
+#Performs a traditional caesar cipher.
 def caesarCipher(string: str,key: int):
 	key %= 26;
 	if(key == 0): #If there is no shift, then just return the original string.
 		return string;
 
 	#Initialize string to add to for the cipher.
-	returnString = "";
+	returnString = [];
 
 	for char in string:
-		#If the character is lowercase, cipher its lowercase variant.
-		if( char in lowered(alphabet) ):
-			index = lowered(alphabet).index(char);
-			index += key;
-			index %= 26;
-			returnString += lowered(alphabet)[index];
-		#If the character is uppercase, cipher its lowercase variant.
-		elif( char in uppered(alphabet) ):
-			index = uppered(alphabet).index(char);
-			index += key;
-			index %= 26;
-			returnString += uppered(alphabet)[index];
-		#For all other cases like spaces or punctuation, ignore any special operations and just add it to the string.
-		else:
-			returnString += char
-	return returnString
+		returnString.append(caesarChar(char,key));
+
+	return "".join(returnString)
+
+@cache
+def codePointCharacter(char: str, shift: int, lower: int, upper: int):
+	order = ord(char)
+	order += shift;
+	order -= lower;
+	order %= upper - lower + 1;
+	order += lower;
+	return chr(order);
 
 #Performs a code point cipher.
 #The string is interpretted as a list of unicode points (in decimal) using the ord() function.
 #Then, the code points are shifted based on the integer shift given to the function, with positive being right and negative being left.
 #The code points are wrapped around the range of "lower" and "upper", or the lowest/highest ord value respectively if lower or upper are not defined.
-def codePointCaesarCipher(string: str,shift: int, lower:int|None=None ,upper:int|None=None ):
+def codePointCaesarCipher(string: str,shift: int, lower:int|None=None ,upper:int|None=None ) -> str:
 
-	if(shift == 0): #If there is no shift, jsut return the same string.
+	if(shift == 0 or string == ""): #If there is no shift, or if the string is empty, jsut return the same string.
 		return string;
 
 	if(lower is None or upper is None):
@@ -288,20 +309,30 @@ def codePointCaesarCipher(string: str,shift: int, lower:int|None=None ,upper:int
 			order = ord(char)
 			lower = min(lower,order);
 			upper = max(upper,order);
+
 	if(shift % (upper - lower + 1) == 0): #If the shift would result in the same string, jsut return the same string.
 		return string;
 
-	returnString = "";
+	returnString = [];
 
 	for char in string:
-		order = ord(char)
-		order += shift;
-		order -= lower;
-		order %= upper - lower + 1;
-		order += lower;
-		returnString += chr(order);
+		returnString.append(codePointCharacter(char,shift,lower,upper));
 
-	return returnString;
+	return "".join(returnString);
+
+#Gets the range of a string as interpretted by a code point cipher if no lower or upper bounds were specified.
+def codePointRange(string: str) -> tuple[int,int]:
+	lower = 0x110000;
+	upper = 0;
+	for char in string:
+		order = ord(char)
+		lower = min(lower,order);
+		upper = max(upper,order);
+
+	if(lower > upper): #If the string is empty, lower will be greater than upper. We will just fix this by assigning lower to upper if this is the case.
+		lower = upper;
+
+	return (lower,upper);
 
 #Performs an in-place cipher.
 #First, each unique ord() value is obtaiend and sorted.
@@ -332,12 +363,12 @@ def inPlaceCaesarCipher(string: str,shift: int):
 		index = orderArray.index(order);
 		returnString += chr(postOrderArray[index]);
 
-
 	return returnString;
 
 # -- The Symbol Map Cipher functions. --
 
 #Interprets Symbol Map Cipher keys, parsing out operations or presets like "alphabet-standard", "case" or "bigraphic".
+@cache
 def escapeCustomKey1(string) -> list[str]:
 
 	case = 0;
@@ -431,7 +462,7 @@ def escapeCustomKey1(string) -> list[str]:
 	else:
 		return []
 
-
+@cache
 def escapeCustomKey2(string) -> list[str]:
 
 	escaperMain = [];
